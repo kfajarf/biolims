@@ -1,0 +1,13 @@
+<div class="row">
+        <div class="col-sm-5" align="right">
+        <?= Html::img('@web/20100604158462626.png');?>
+        </div>
+        <div class="col-sm-4">
+        <h1><br>Biofarmaka</h1>
+
+        <p class="lead">Lab Information Management System</p>
+
+        <p><a class="btn btn-lg btn-primary" href="http://www.biofarmaka.ipb.ac.id">Check out Biofarmaka's site</a></p>
+        <br><br><br>
+        </div>
+    </div>
