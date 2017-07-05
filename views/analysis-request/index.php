@@ -125,7 +125,7 @@ for ($idx=1; $idx <= 12; $idx++)
             xAxis: {
                 categories: ['Metode', 'Peralatan', 'Personel', 'Bahan Kimia', 'Akomodasi'],
                 title: {
-                    text: 'Pengujian Parameter'
+                    text: 'Parameter Pengujian'
                 }
             },
             yAxis: {

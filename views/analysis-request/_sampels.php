@@ -26,7 +26,7 @@ use yii\grid\GridView;
             'jenis_metode_analisis',
             //'lpsb_order_no',
             // 'id_pemohon',
-            ['class' => 'yii\grid\ActionColumn'],
+            // ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

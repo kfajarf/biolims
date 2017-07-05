@@ -53,7 +53,14 @@ use yii\helpers\Url;
                       ],
                       ['label' => ThemeNav::link('Penyimpanan Bahan Kimia', 'fa fa-flask'), 'url' => ['/chem-storage'], 'active' => (\Yii::$app->request->getUrl() == Url::toRoute(['/chem-storage']) || \Yii::$app->request->getUrl() == Url::toRoute(['/chem-storage/create']) || \Yii::$app->request->getUrl() == Url::toRoute(['/lokasi/index']) || \Yii::$app->request->getUrl() == Url::toRoute(['/supplier/index'])), 'visible'=>!Yii::$app->user->isGuest],
                       ['label' => ThemeNav::link('Alat Laboratorium', 'fa fa-bell'), 'url' => ['/lab-kit'], 'active' => (\Yii::$app->request->getUrl() == Url::toRoute(['/lab-kit']) || \Yii::$app->request->getUrl() == Url::toRoute(['/lab-kit/list-peminjaman'])), 'visible'=>!Yii::$app->user->isGuest],
-                      
+                      ['label' => ThemeNav::link('Arsip Surat', 'fa fa-archive'), 'url' => ['/surat-masuk'], 'active' => (Yii::$app->controller->id == 'surat-masuk'), 'visible'=>!Yii::$app->user->isGuest, 'items' => [
+                          ['label' => (Yii::$app->controller->id == 'surat-masuk' ? '&#10148; Surat Masuk': 'Surat Masuk' ), 'url' => ['/surat-masuk'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'surat-masuk' || Yii::$app->controller->id == 'surat-keluar')), 'options'=>['class'=>'sidebar-menu header'],
+                          ],
+                          //ThemeNav::link('Surat Administrasi', 'fa fa-circle text-success')
+                          ['label' => (Yii::$app->controller->id == 'surat-keluar' ? '&#10148; Surat Keluar': 'Surat Keluar' ), 'url' => ['/surat-keluar'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'surat-masuk' || Yii::$app->controller->id == 'surat-keluar')), 'options'=>['class'=>'sidebar-menu header'],
+                          ],
+                        ],
+                      ],
 
                       /*['label'=>Yii::t('app','SUB NAVIGATION'), 'options'=>['class'=>'header']],
                       ['label' => ThemeNav::link('Lokasi Penyimpanan', 'fa fa-bullseye'), 'url' => ['/lokasi'], 'visible'=>!Yii::$app->user->isGuest],

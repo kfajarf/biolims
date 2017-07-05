@@ -102,8 +102,9 @@ div.line {
     overflow-x: auto; 
     white-space: nowrap; 
     background-color: white; 
-    padding: 20px 20px 0px 20px;
+    padding: 10px 10px 0px 10px;
 }
+
 
 .tHead table thead {
     background-color: #FF0000;
