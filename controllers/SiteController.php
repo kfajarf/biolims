@@ -7,6 +7,8 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
+use app\models\AnalysisRequestData;
+use app\models\AnalysisRequestDataSearch;
 use app\models\ContactForm;
 
 class SiteController extends Controller
@@ -51,8 +53,16 @@ class SiteController extends Controller
     {
         if(\Yii::$app->user->isGuest)
             return $this->actionLogin();
-        else 
+        else {
+            $searchModel = new AnalysisRequestDataSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            return $this->render('index', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
             return $this->render('index');
+        }
     }
 
     public function actionLogin()

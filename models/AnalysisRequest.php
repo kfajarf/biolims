@@ -7,7 +7,9 @@ use Yii;
 /**
  * This is the model class for table "analysis_request".
  *
- * @property string $id
+ * @property integer $id
+ * @property string $lpsb_order_no
+ * @property integer $id_kategori_klien
  * @property string $status_pengujian
  * @property string $tanggal_diterima
  * @property string $tanggal_selesai
@@ -16,6 +18,8 @@ use Yii;
  * @property integer $sisa
  * @property string $keterangan
  *
+ * @property KategoriKlien $idKategoriKlien
+ * @property KajiUlang[] $kajiUlangs
  * @property PemohonAnalisis[] $pemohonAnalises
  * @property Sampel[] $sampels
  */
@@ -35,13 +39,12 @@ class AnalysisRequest extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lpsb_order_no', 'status_pengujian', 'tanggal_diterima', 'tanggal_selesai'], 'required'],
-            [['lpsb_order_no'], 'unique'],
+            [['lpsb_order_no', 'id_kategori_klien', 'status_pengujian', 'tanggal_diterima', 'tanggal_selesai', 'total_biaya', 'dp', 'sisa', 'keterangan'], 'required'],
+            [['id_kategori_klien', 'total_biaya', 'dp', 'sisa'], 'integer'],
             [['status_pengujian', 'keterangan'], 'string'],
-            [['total_biaya', 'dp'], 'default', 'value' => 0],
-            [['sisa', 'total_biaya', 'dp', 'keterangan'], 'safe'],
-            [['id', 'total_biaya', 'dp', 'sisa'], 'integer'],
+            [['tanggal_diterima', 'tanggal_selesai'], 'safe'],
             [['lpsb_order_no'], 'string', 'max' => 100],
+            [['id_kategori_klien'], 'exist', 'skipOnError' => true, 'targetClass' => KategoriKlien::className(), 'targetAttribute' => ['id_kategori_klien' => 'id']],
         ];
     }
 
@@ -52,7 +55,8 @@ class AnalysisRequest extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'lpsb_order_no' => 'LPSB Order No',
+            'lpsb_order_no' => 'Lpsb Order No',
+            'id_kategori_klien' => 'Kategori Klien',
             'status_pengujian' => 'Status Pengujian',
             'tanggal_diterima' => 'Tanggal Diterima',
             'tanggal_selesai' => 'Tanggal Selesai',
@@ -61,6 +65,22 @@ class AnalysisRequest extends \yii\db\ActiveRecord
             'sisa' => 'Sisa',
             'keterangan' => 'Keterangan',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIdKategoriKlien()
+    {
+        return $this->hasOne(KategoriKlien::className(), ['id' => 'id_kategori_klien']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getKajiUlangs()
+    {
+        return $this->hasMany(KajiUlang::className(), ['request_id' => 'id']);
     }
 
     /**
@@ -77,10 +97,5 @@ class AnalysisRequest extends \yii\db\ActiveRecord
     public function getSampels()
     {
         return $this->hasMany(Sampel::className(), ['request_id' => 'id']);
-    }
-
-    public function getKajiUlang()
-    {
-        return $this->hasMany(KajiUlang::className(), ['request_id' => 'id']);
     }
 }

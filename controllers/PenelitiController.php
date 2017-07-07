@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Lokasi;
-use app\models\LokasiSearch;
+use app\models\Peneliti;
+use app\models\PenelitiSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * LokasiController implements the CRUD actions for Lokasi model.
+ * PenelitiController implements the CRUD actions for Peneliti model.
  */
-class LokasiController extends Controller
+class PenelitiController extends Controller
 {
     /**
      * @inheritdoc
@@ -30,13 +30,12 @@ class LokasiController extends Controller
     }
 
     /**
-     * Lists all Lokasi models.
+     * Lists all Peneliti models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $this->checkPrivilege();
-        $searchModel = new LokasiSearch();
+        $searchModel = new PenelitiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -46,46 +45,43 @@ class LokasiController extends Controller
     }
 
     /**
-     * Displays a single Lokasi model.
+     * Displays a single Peneliti model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        $this->checkPrivilege();
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new Lokasi model.
+     * Creates a new Peneliti model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $this->checkPrivilege();
-        $model = new Lokasi();
+        $model = new Peneliti();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->renderAjax('create', [
+            return $this->render('create', [
                 'model' => $model,
             ]);
         }
     }
 
     /**
-     * Updates an existing Lokasi model.
+     * Updates an existing Peneliti model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
-        $this->checkPrivilege();
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -98,36 +94,31 @@ class LokasiController extends Controller
     }
 
     /**
-     * Deletes an existing Lokasi model.
+     * Deletes an existing Peneliti model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        $this->checkPrivilege();
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Lokasi model based on its primary key value.
+     * Finds the Peneliti model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Lokasi the loaded model
+     * @return Peneliti the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Lokasi::findOne($id)) !== null) {
+        if (($model = Peneliti::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    public function checkPrivilege() {
-        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
 }

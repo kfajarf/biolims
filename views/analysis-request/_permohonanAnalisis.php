@@ -202,7 +202,7 @@
 					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['jenis_metode_analisis']."</FONT></P>
 				</TD>
 				<TD>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['id']."</FONT></P>
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['nama_sampel']."</FONT></P>
 				</TD>";
 		} else {
 			echo "<TD><P><BR></P></TD>

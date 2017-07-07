@@ -39,6 +39,7 @@ class LabKitController extends Controller
      */
     public function actionIndex()
     {
+        $this->checkPrivilege();
         $models = LabKit::find()->where(['not', ['id' => NULL]])->all();
         foreach ($models as $idx => $model) {
             $this->checkStatus($model->id);
@@ -60,6 +61,7 @@ class LabKitController extends Controller
      */
     public function actionView($id)
     {
+        $this->checkPrivilege();
         $model = $this->findModel($id);
         return $this->render('view', [
             'model' => $model,
@@ -73,6 +75,7 @@ class LabKitController extends Controller
      */
     public function actionCreate()
     {
+        $this->checkPrivilege();
         $model = new LabKit();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -95,6 +98,7 @@ class LabKitController extends Controller
      */
     public function actionUpdate($id)
     {
+        $this->checkPrivilege();
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
@@ -114,12 +118,14 @@ class LabKitController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->checkPrivilege();
         $this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
 
     public function actionDeleteLog($id)
     {
+        $this->checkPrivilege();
         $pengguna = \app\models\PenggunaanAlat::find()->where(['id' => $id])->one();
         $pengguna->delete();
         
@@ -128,6 +134,7 @@ class LabKitController extends Controller
 
     public function actionPeminjaman()
     {
+        $this->checkPrivilege();
         $pengguna = new PenggunaanAlat;
 
         if ($pengguna->load(Yii::$app->request->post())) {
@@ -147,6 +154,7 @@ class LabKitController extends Controller
 
     public function actionListPeminjaman()
     {
+        $this->checkPrivilege();
         $searchModel = new PenggunaanAlatSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -224,5 +232,9 @@ class LabKitController extends Controller
         }
         else $model->status_penggunaan = "tersedia";
         $model->save();
+    }
+    
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
 }

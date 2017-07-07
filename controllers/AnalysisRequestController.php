@@ -7,6 +7,7 @@ use app\models\AnalysisRequest;
 use app\models\AnalysisRequestSearch;
 use app\models\SampelSearch;
 use app\models\Sampel;
+use app\models\ViewSampel;
 use app\models\PemohonAnalisis;
 use app\models\KajiUlang;
 use yii\web\Controller;
@@ -44,6 +45,7 @@ class AnalysisRequestController extends Controller
      */
     public function actionIndex()
     {
+        $this->checkPrivilege();
         $searchModel = new AnalysisRequestSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -60,6 +62,7 @@ class AnalysisRequestController extends Controller
      */
     public function actionView($id)
     {
+        $this->checkPrivilege();
         $model = $this->findModel($id);
         $lpsbId = $model->id;
         $sampel = $this->findSampel($lpsbId);
@@ -79,6 +82,7 @@ class AnalysisRequestController extends Controller
      */
     public function actionCreate()
     {
+        $this->checkPrivilege();
         $model = new AnalysisRequest();
         $modelsSampel = [new Sampel];
         $pemohon = new PemohonAnalisis();
@@ -97,19 +101,20 @@ class AnalysisRequestController extends Controller
                 );
             }
             
-            $model->tanggal_diterima = date('Y-m-d');
-            $model->sisa = $model->total_biaya - $model->dp;
-            $model->save();
-            $pemohon->request_id = $model->id;
-            $pemohon->save();
+            // $model->tanggal_diterima = date('Y-m-d');
 
             // validate all models
             
             $valid = $model->validate();
             // print_r($model->getErrors());
-            // var_dump($valid);
-            // die();
+            $model->sisa = $model->total_biaya - $model->dp;
+            $model->save();
+            $pemohon->request_id = $model->id;
+            $pemohon->save();
+            var_dump($valid);
+            die();
             $valid = Model::validateMultiple($modelsSampel) && $valid;
+            // var_dump($valid);die();
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
@@ -141,6 +146,7 @@ class AnalysisRequestController extends Controller
 
     public function actionUpdate($id)
     {
+        $this->checkPrivilege();
         $modelCustomer = $this->findModel($id);
         $modelsAddress = $modelCustomer->addresses;
 
@@ -198,6 +204,7 @@ class AnalysisRequestController extends Controller
 /*
     public function actionUpdate($id)
     {
+        $this->checkPrivilege();
         $model = $this->findModel($id);
         $pemohon = $this->findPemohon($model->id);
 
@@ -213,6 +220,7 @@ class AnalysisRequestController extends Controller
 */
     public function actionKajiUlang($id)
     {
+        $this->checkPrivilege();
         $model = AnalysisRequest::find()->where(['id' => $id])->one();
         $pemohon = PemohonAnalisis::find()->where(['request_id' => $id])->one();
         $kajiUlang = [new KajiUlang];
@@ -410,6 +418,7 @@ class AnalysisRequestController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->checkPrivilege();
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -433,7 +442,7 @@ class AnalysisRequestController extends Controller
 
     public function findSampel($lpsbId)
     {
-        if (($model = Sampel::find()->where(['=', 'request_id', $lpsbId])->asArray()->all()) !== null) {
+        if (($model = ViewSampel::find()->where(['=', 'request_id', $lpsbId])->asArray()->all()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Sampel does not exist.');
@@ -448,4 +457,8 @@ class AnalysisRequestController extends Controller
             throw new NotFoundHttpException('The requested "Pemohon Analisis" does not exist.');
         }
     }    
+
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
+    }
 }

@@ -121,4 +121,8 @@ class PemohonAnalisisController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
+    }
 }

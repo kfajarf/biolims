@@ -42,6 +42,7 @@ class ChemStorageController extends Controller
      */
     public function actionIndex()
     {
+        $this->checkPrivilege();
         $searchModel = new ReagenSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -58,6 +59,7 @@ class ChemStorageController extends Controller
      */
     public function actionView($id)
     {
+        $this->checkPrivilege();
         $reagen = $this->findReagen($id);
         $idStorage = $reagen->id_storage;
         $model = $this->findModel($idStorage);
@@ -81,6 +83,7 @@ class ChemStorageController extends Controller
      */
     public function actionCreate()
     {
+        $this->checkPrivilege();
         $model = new ChemStorage();
         $modelsReagen = [new Reagen];
 
@@ -133,6 +136,7 @@ class ChemStorageController extends Controller
 
     public function actionUpdate($id)
     {
+        $this->checkPrivilege();
         $reagen = $this->findReagen($id);
         $idStorage = $reagen->id_storage;
         $model = $this->findModel($idStorage);
@@ -150,6 +154,7 @@ class ChemStorageController extends Controller
 
     public function actionTakeReagen($id)
     {
+        $this->checkPrivilege();
         $reagen = $this->findReagen($id);
         $takeReagen = new \app\models\TakeReagen();
 
@@ -179,6 +184,7 @@ class ChemStorageController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->checkPrivilege();
         $reagen = $this->findReagen($id);
         $idStorage = $reagen->id_storage;
         $model = $this->findModel($idStorage);
@@ -254,5 +260,9 @@ class ChemStorageController extends Controller
         }
 
         return $flag;
+    }
+
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
 }

@@ -10,7 +10,7 @@ use app\models\Sampel;
 /**
  * SampelSearch represents the model behind the search form about `app\models\Sampel`.
  */
-class SampelSearch extends Sampel
+class ViewSampelSearch extends ViewSampel
 {
     /**
      * @inheritdoc
@@ -18,7 +18,7 @@ class SampelSearch extends Sampel
     public function rules()
     {
         return [
-            [['nama_sampel', 'jenis', 'kemasan', 'jumlah', 'jenis_metode_analisis', 'request_id'], 'safe'],
+            [['sampel_id', 'nama_sampel', 'jenis', 'kemasan', 'jumlah', 'jenis_metode_analisis', 'request_id'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class SampelSearch extends Sampel
      */
     public function search($params)
     {
-        $query = Sampel::find();
+        $query = ViewSampel::find();
 
         // add conditions that should always apply here
 
@@ -60,7 +60,8 @@ class SampelSearch extends Sampel
         $query->andFilterWhere([
         ]);
 
-        $query->andFilterWhere(['like', 'nama_sampel', $this->id])
+        $query->andFilterWhere(['like', 'nama_sampel', $this->nama_sampel])
+            ->andFilterWhere(['like', 'sampel_id', $this->sampel_id])
             ->andFilterWhere(['like', 'jenis', $this->jenis])
             ->andFilterWhere(['like', 'kemasan', $this->kemasan])
             ->andFilterWhere(['like', 'jumlah', $this->jumlah])

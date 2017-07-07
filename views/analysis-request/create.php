@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\AnalysisRequest */
 
-$this->title = 'Create Analysis Request';
+$this->title = 'Surat Permohonan Analisis Sampel';
 $this->params['breadcrumbs'][] = ['label' => 'Analysis Requests', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

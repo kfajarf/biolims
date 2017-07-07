@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\Menu;
 use yii\widgets\Breadcrumbs;
+use app\models\User;
 use app\themes\adminLTE\components\ThemeNav;
 use kartik\sidenav\SideNav;
 use yii\helpers\Url;
@@ -42,18 +43,18 @@ use yii\helpers\Url;
                   ],
                   'items' => [
                       ['label'=>Yii::t('app','MAIN NAVIGATION'), 'options'=>['class'=>'header']],
-                      ['label' => ThemeNav::link('Dashboard', 'fa fa-dashboard'), 'url' => ['/'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/']), 'visible'=>!Yii::$app->user->isGuest],
-                      ['label' => ThemeNav::link('Surat Administrasi', 'fa fa-pencil-square-o'), 'url' => ['/analysis-request'], 'active' => (Yii::$app->controller->id == 'analysis-request'), 'visible'=>!Yii::$app->user->isGuest, 'items' => [
-                          ['label' => (Yii::$app->controller->id == 'analysis-request' ? '&#10148; Permohonan Analisis': 'Permohonan Analisis' ), 'url' => ['/analysis-request'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'analysis-request' || Yii::$app->controller->id == 'permohonan-penelitian')), 'options'=>['class'=>'sidebar-menu header'],
+                      ['label' => ThemeNav::link('Data Report', 'fa fa-dashboard'), 'url' => ['/'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/']), 'visible'=>!Yii::$app->user->isGuest],
+                      ['label' => ThemeNav::link('Surat Administrasi', 'fa fa-pencil-square-o'), 'url' => ['/analysis-request'], 'active' => (Yii::$app->controller->id == 'analysis-request'), 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement()), 'items' => [
+                          ['label' => (Yii::$app->controller->id == 'analysis-request' ? '&#10148; Permohonan Analisis': 'Permohonan Analisis' ), 'url' => ['/analysis-request'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'analysis-request' || Yii::$app->controller->id == 'peneliti')), 'options'=>['class'=>'sidebar-menu header'],
                           ],
                           //ThemeNav::link('Surat Administrasi', 'fa fa-circle text-success')
-                          ['label' => (Yii::$app->controller->id == 'permohonan-penelitian' ? '&#10148; Permohonan Penelitian': 'Permohonan Penelitian' ), 'url' => ['/permohonan-penelitian'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'analysis-request' || Yii::$app->controller->id == 'permohonan-penelitian')), 'options'=>['class'=>'sidebar-menu header'],
+                          ['label' => (Yii::$app->controller->id == 'peneliti' ? '&#10148; Permohonan Penelitian': 'Permohonan Penelitian' ), 'url' => ['/peneliti'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'analysis-request' || Yii::$app->controller->id == 'peneliti')), 'options'=>['class'=>'sidebar-menu header'],
                           ],
                         ],
                       ],
-                      ['label' => ThemeNav::link('Penyimpanan Bahan Kimia', 'fa fa-flask'), 'url' => ['/chem-storage'], 'active' => (\Yii::$app->request->getUrl() == Url::toRoute(['/chem-storage']) || \Yii::$app->request->getUrl() == Url::toRoute(['/chem-storage/create']) || \Yii::$app->request->getUrl() == Url::toRoute(['/lokasi/index']) || \Yii::$app->request->getUrl() == Url::toRoute(['/supplier/index'])), 'visible'=>!Yii::$app->user->isGuest],
-                      ['label' => ThemeNav::link('Alat Laboratorium', 'fa fa-bell'), 'url' => ['/lab-kit'], 'active' => (\Yii::$app->request->getUrl() == Url::toRoute(['/lab-kit']) || \Yii::$app->request->getUrl() == Url::toRoute(['/lab-kit/list-peminjaman'])), 'visible'=>!Yii::$app->user->isGuest],
-                      ['label' => ThemeNav::link('Arsip Surat', 'fa fa-archive'), 'url' => ['/surat-masuk'], 'active' => (Yii::$app->controller->id == 'surat-masuk'), 'visible'=>!Yii::$app->user->isGuest, 'items' => [
+                      ['label' => ThemeNav::link('Penyimpanan Bahan Kimia', 'fa fa-flask'), 'url' => ['/chem-storage'], 'active' => (\Yii::$app->request->getUrl() == Url::toRoute(['/chem-storage']) || \Yii::$app->request->getUrl() == Url::toRoute(['/chem-storage/create']) || \Yii::$app->request->getUrl() == Url::toRoute(['/lokasi/index']) || \Yii::$app->request->getUrl() == Url::toRoute(['/supplier/index'])), 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement())],
+                      ['label' => ThemeNav::link('Alat Laboratorium', 'fa fa-bell'), 'url' => ['/lab-kit'], 'active' => (\Yii::$app->request->getUrl() == Url::toRoute(['/lab-kit']) || \Yii::$app->request->getUrl() == Url::toRoute(['/lab-kit/list-peminjaman'])), 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement())],
+                      ['label' => ThemeNav::link('Arsip Surat', 'fa fa-archive'), 'url' => ['/surat-masuk'], 'active' => (Yii::$app->controller->id == 'surat-masuk'), 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement()), 'items' => [
                           ['label' => (Yii::$app->controller->id == 'surat-masuk' ? '&#10148; Surat Masuk': 'Surat Masuk' ), 'url' => ['/surat-masuk'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'surat-masuk' || Yii::$app->controller->id == 'surat-keluar')), 'options'=>['class'=>'sidebar-menu header'],
                           ],
                           //ThemeNav::link('Surat Administrasi', 'fa fa-circle text-success')
@@ -63,7 +64,7 @@ use yii\helpers\Url;
                       ],
 
                       /*['label'=>Yii::t('app','SUB NAVIGATION'), 'options'=>['class'=>'header']],
-                      ['label' => ThemeNav::link('Lokasi Penyimpanan', 'fa fa-bullseye'), 'url' => ['/lokasi'], 'visible'=>!Yii::$app->user->isGuest],
+                      ['label' => ThemeNav::link('Lokasi Penyimpanan', 'fa fa-bullseye'), 'url' => ['/lokasi'], 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement())],
                       ['label' => ThemeNav::link('Supplier', 'fa fa-bullseye'), 'url' => ['/supplier'], 'visible'=>!Yii::$app->user->isGuest],*/
 
                   ],

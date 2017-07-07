@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use app\models\SampelSearch;
+use app\models\ViewSampelSearch;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
 use app\models\AnalysisRequest;
@@ -200,7 +200,7 @@ for ($idx=1; $idx <= 12; $idx++)
                 },
                 'detail' => function($model, $key, $index, $column)
                 {
-                    $searchModel = new SampelSearch();
+                    $searchModel = new ViewSampelSearch();
                     $searchModel -> request_id = $model -> id;
                     $dataProvider = $searchModel -> search(Yii::$app-> request-> queryParams);
 

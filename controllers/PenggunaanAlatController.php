@@ -35,6 +35,7 @@ class PenggunaanAlatController extends Controller
      */
     public function actionIndex()
     {
+        $this->checkPrivilege();
         $searchModel = new PenggunaanAlatSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -51,6 +52,7 @@ class PenggunaanAlatController extends Controller
      */
     public function actionView($id)
     {
+        $this->checkPrivilege();
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -63,6 +65,7 @@ class PenggunaanAlatController extends Controller
      */
     public function actionCreate()
     {
+        $this->checkPrivilege();
         $model = new PenggunaanAlat();
 
         if ($model->load(Yii::$app->request->post())) {
@@ -86,6 +89,7 @@ class PenggunaanAlatController extends Controller
      */
     public function actionUpdate($id)
     {
+        $this->checkPrivilege();
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -105,6 +109,7 @@ class PenggunaanAlatController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->checkPrivilege();
         $this->findModel($id)->delete();
         // var_dump("TEST");die();
         return $this->redirect(['index']);
@@ -134,5 +139,9 @@ class PenggunaanAlatController extends Controller
         } else {
             return null;
         }
+    }
+
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
 }

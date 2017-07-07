@@ -1,104 +1,114 @@
 <?php
 
+
 namespace app\models;
 
-class User extends \yii\base\Object implements \yii\web\IdentityInterface
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+	
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'lpsbipb',
-            'password' => 'biolims',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
+    public static function tableName()
+    {
+        return 'user';
+    }
 
     /**
-     * @inheritdoc
+     * Finds an identity by the given ID.
+     *
+     * @param string|integer $id the ID to be looked for
+     * @return IdentityInterface|null the identity object that matches the given ID.
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
     }
 
     /**
-     * @inheritdoc
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Finds user by username
+     * Finds an identity by the given ID.
      *
-     * @param string $username
-     * @return static|null
+     * @param string|integer $id the ID to be looked for
+     * @return IdentityInterface|null the identity object that matches the given ID.
      */
     public static function findByUsername($username)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
+        return static::findOne(['username' => $username]);
+    }
+	
+	public function validatePassword($password) {
+		return password_verify($password, $this->password_hash);
+	}
 
-        return null;
+    /**
+     * Finds an identity by the given token.
+     *
+     * @param string $token the token to be looked for
+     * @return IdentityInterface|null the identity object that matches the given token.
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(['auth_key' => $token]);
     }
 
     /**
-     * @inheritdoc
+     * @return int|string current user ID
      */
     public function getId()
     {
         return $this->id;
     }
 
+    public function getStatus() {
+        if (\Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
+    }
+
     /**
-     * @inheritdoc
+     * @return string current user auth key
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     /**
-     * @inheritdoc
+     * @param string $authKey
+     * @return boolean if auth key is valid for current user
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($auth_key)
     {
-        return $this->authKey === $authKey;
+        return $this->getAuthKey() === $auth_key;
     }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return boolean if password provided is valid for current user
-     */
-    public function validatePassword($password)
+	
+	
+	public function beforeSave($insert)
     {
-        return $this->password === $password;
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+            }
+            return true;
+        }
+        return false;
     }
+	
+	public function getUser () {
+		if ($this->isStaff()) return Staff::findOne(['id' => $this->id]);
+	}
+	
+	public function isStaff() {
+		if (isSet($this->id)) {
+			if (Staff::findOne(['id' => $this->id])) return true;
+		}
+		return false;
+	}
+	
+	public function notUpperManagement()
+	{
+		$staff = Staff::findOne(['user_id' => \Yii::$app->user->id]);
+		if($staff)
+			if(TopManagement::findOne(['staff_id' => $staff->id])) return false;
+		return true;
+	}
 }
