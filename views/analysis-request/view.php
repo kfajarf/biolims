@@ -83,6 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'dp',
             'sisa',
             'keterangan:ntext',
+            'status',
         ],
     ]) ?>
         </div>

@@ -39,10 +39,11 @@ class AnalysisRequest extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lpsb_order_no', 'id_kategori_klien', 'status_pengujian', 'tanggal_diterima', 'tanggal_selesai', 'total_biaya', 'dp', 'sisa', 'keterangan'], 'required'],
+            [['lpsb_order_no', 'id_kategori_klien', 'status_pengujian', 'total_biaya'], 'required'],
             [['id_kategori_klien', 'total_biaya', 'dp', 'sisa'], 'integer'],
             [['status_pengujian', 'keterangan'], 'string'],
-            [['tanggal_diterima', 'tanggal_selesai'], 'safe'],
+            [['dp'], 'default', 'value' => 0],
+            [['tanggal_diterima', 'tanggal_selesai', 'dp', 'sisa', 'keterangan', 'tanggal_diterima', 'tanggal_selesai'], 'safe'],
             [['lpsb_order_no'], 'string', 'max' => 100],
             [['id_kategori_klien'], 'exist', 'skipOnError' => true, 'targetClass' => KategoriKlien::className(), 'targetAttribute' => ['id_kategori_klien' => 'id']],
         ];
@@ -94,8 +95,9 @@ class AnalysisRequest extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSampels()
+
+    public function getKategoriAnalisis()
     {
-        return $this->hasMany(Sampel::className(), ['request_id' => 'id']);
+        return $this->hasMany(KategoriAnalisis::className(), ['request_id' => 'id']);
     }
 }

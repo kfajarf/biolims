@@ -7,7 +7,8 @@ use app\models\AnalysisRequest;
 use app\models\AnalysisRequestSearch;
 use app\models\SampelSearch;
 use app\models\Sampel;
-use app\models\ViewSampel;
+use app\models\KategoriAnalisis;
+use app\models\DataJasaLayanan;
 use app\models\PemohonAnalisis;
 use app\models\KajiUlang;
 use yii\web\Controller;
@@ -18,6 +19,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\mpdf\Pdf;
+use yii\web\Session;
 
 /**
  * AnalysisRequestController implements the CRUD actions for AnalysisRequest model.
@@ -46,6 +48,12 @@ class AnalysisRequestController extends Controller
     public function actionIndex()
     {
         $this->checkPrivilege();
+        /*$date = date('Y-m-d');
+        $date2 = date('2017-01-04');
+        var_dump(date('2017-01-04'));
+        var_dump(date('Y-m-d', strtotime($date2. '+ 20 day')));
+        var_dump($date2);
+        die();*/
         $searchModel = new AnalysisRequestSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -53,6 +61,14 @@ class AnalysisRequestController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionLunas($id)
+    {
+        $model = $this->findModel($id);
+        if($model) $model->status = 'lunas';
+        if($model->save()) return $this->redirect(['index']);
+        else throw new Exception("Error Processing Request", 1);
     }
 
     /**
@@ -64,12 +80,12 @@ class AnalysisRequestController extends Controller
     {
         $this->checkPrivilege();
         $model = $this->findModel($id);
-        $lpsbId = $model->id;
-        $sampel = $this->findSampel($lpsbId);
-        $pemohon = $this->findPemohon($lpsbId);
+        $kategoriAnalisis = $model->kategoriAnalisis;
+        $pemohon = $this->findPemohon($id);
+
         return $this->render('view', [
             'model' => $model,
-            'sampel' => $sampel,
+            'kategoriAnalisis' => $kategoriAnalisis,
             'pemohon' => $pemohon,
 
         ]);
@@ -80,114 +96,188 @@ class AnalysisRequestController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+     public function actionCreate()
     {
+        /*
+            $modelPerson = new Person;
+            $modelsHouse = [new House];
+            $modelsRoom = [[new Room]];
+        */
+
         $this->checkPrivilege();
-        $model = new AnalysisRequest();
-        $modelsSampel = [new Sampel];
-        $pemohon = new PemohonAnalisis();
+        $model = new AnalysisRequest;
+        $pemohon = new PemohonAnalisis;
+        $modelsKAnalisis = [new KategoriAnalisis];
+        $modelsSampel = [[new Sampel]];
 
+        if ($model->load(Yii::$app->request->post()) && $pemohon->load(Yii::$app->request->post())) {
 
-        if ($model->load(Yii::$app->request->post()) && $pemohon->load(Yii::$app->request->post())) 
-        {
-            $modelsSampel = Model::createMultiple(Sampel::classname());
-            Model::loadMultiple($modelsSampel, Yii::$app->request->post());
-            
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                    ActiveForm::validateMultiple($modelsSampel),
-                    ActiveForm::validate($model) 
-                );
-            }
-            
-            // $model->tanggal_diterima = date('Y-m-d');
+            $modelsKAnalisis = Model::createMultiple(KategoriAnalisis::classname());
+            Model::loadMultiple($modelsKAnalisis, Yii::$app->request->post());
 
-            // validate all models
-            
-            $valid = $model->validate();
-            // print_r($model->getErrors());
+            $model->tanggal_diterima = date('2017-01-04');
+            $model->tanggal_selesai = date('Y-m-d', strtotime($model->tanggal_diterima. '+ 20 day'));
             $model->sisa = $model->total_biaya - $model->dp;
             $model->save();
             $pemohon->request_id = $model->id;
             $pemohon->save();
-            var_dump($valid);
-            die();
-            $valid = Model::validateMultiple($modelsSampel) && $valid;
-            // var_dump($valid);die();
+            // var_dump($pemohon->save());die();
+            
+            // validate AR and KA models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsKAnalisis) && $valid;
+            if (isset($_POST['Sampel'][0][0])) {
+                foreach ($_POST['Sampel'] as $indexAnalisis => $sampels) {
+                    foreach ($sampels as $indexSampel => $sampel) {
+                        $data['Sampel'] = $sampel;
+                        $modelSampel = new Sampel;
+                        $modelSampel->load($data);
+                        $modelsSampel[$indexAnalisis][$indexSampel] = $modelSampel;
+                        $valid = $modelSampel->validate();
+                    }
+                }
+            }
+
             if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
+                $transaction = Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
-                        foreach ($modelsSampel as $modelSampel) {
-                            $modelSampel->request_id = $model->id;
-                            if (! ($flag = $modelSampel->save(false))) {
-                                $transaction->rollBack();
+                        foreach ($modelsKAnalisis as $indexAnalisis => $modelKAnalisis) {
+
+                            if ($flag === false) {
                                 break;
+                            }
+
+                            $modelKAnalisis->request_id = $model->id;
+
+                            if (!($flag = $modelKAnalisis->save(false))) {
+                                break;
+                            }
+
+                            if (isset($modelsSampel[$indexAnalisis]) && is_array($modelsSampel[$indexAnalisis])) {
+                                foreach ($modelsSampel[$indexAnalisis] as $indexSampel => $modelSampel) {
+                                    $modelSampel->kategori_analisis_id = $modelKAnalisis->id;
+                                    if (!($flag = $modelSampel->save(false))) {
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
+
                     if ($flag) {
                         $transaction->commit();
                         return $this->redirect(['index']);
+                            // 'view', 'id' => $model->id]);
+                    } else {
+                        $transaction->rollBack();
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
                 }
             }
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-                'modelsSampel' => (empty($modelsSampel)) ? [new Sampel] : $modelsSampel,
-                'pemohon' => $pemohon,
-            ]);
         }
+
+        return $this->render('create', [
+            'model' => $model,
+            'modelsKAnalisis' => (empty($modelsKAnalisis)) ? [new KategoriAnalisis] : $modelsKAnalisis,
+            'modelsSampel' => (empty($modelsSampel)) ? [[new Sampel]] : $modelsSampel,
+            'pemohon' => $pemohon,
+        ]);
     }
 
     public function actionUpdate($id)
     {
-        $this->checkPrivilege();
-        $modelCustomer = $this->findModel($id);
-        $modelsAddress = $modelCustomer->addresses;
+        $model = $this->findModel($id);
+        $pemohon = $this->findPemohon($model->id);
+        $modelsKAnalisis = $model->kategoriAnalisis;
+        $modelsSampel = [];
+        $oldSampels = [];
 
-        if ($modelCustomer->load(Yii::$app->request->post())) {
+        if (!empty($modelsKAnalisis)) {
+            foreach ($modelsKAnalisis as $indexAnalisis => $modelKAnalisis) {
+                $sampels = $modelKAnalisis->sampels;
+                $modelsSampel[$indexAnalisis] = $sampels;
+                $oldSampels = ArrayHelper::merge(ArrayHelper::index($sampels, 'id'), $oldSampels);
+            }
+        }
 
-            $oldIDs = ArrayHelper::map($modelsAddress, 'id', 'id');
-            $modelsAddress = Model::createMultiple(Address::classname(), $modelsAddress);
-            Model::loadMultiple($modelsAddress, Yii::$app->request->post());
-            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsAddress, 'id', 'id')));
+        if ($model->load(Yii::$app->request->post()) && $pemohon->load(Yii::$app->request->post())) {
 
-            // ajax validation
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ArrayHelper::merge(
-                    ActiveForm::validateMultiple($modelsAddress),
-                    ActiveForm::validate($modelCustomer)
-                );
+            // reset
+            $model->sisa = $model->total_biaya - $model->dp;
+            $model->save();
+            $pemohon->request_id = $model->id;
+            $pemohon->save();
+            $modelsSampel = [];
+
+            $oldKAnalisisIDs = ArrayHelper::map($modelsKAnalisis, 'id', 'id');
+            $modelsKAnalisis = Model::createMultiple(KategoriAnalisis::classname(), $modelsKAnalisis);
+            Model::loadMultiple($modelsKAnalisis, Yii::$app->request->post());
+            $deletedKanalisisIDs = array_diff($oldKAnalisisIDs, array_filter(ArrayHelper::map($modelsKAnalisis, 'id', 'id')));
+
+            // validate person and houses models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsKAnalisis) && $valid;
+
+            $sampelsIDs = [];
+            if (isset($_POST['Sampel'][0][0])) {
+                foreach ($_POST['Sampel'] as $indexAnalisis => $sampels) {
+                    $sampelsIDs = ArrayHelper::merge($sampelsIDs, array_filter(ArrayHelper::getColumn($sampels, 'id')));
+                    foreach ($sampels as $indexSampel => $sampel) {
+                        $data['Sampel'] = $sampel;
+                        $modelSampel = (isset($sampel['id']) && isset($oldSampels[$sampel['id']])) ? $oldSampels[$sampel['id']] : new Sampel;
+                        $modelSampel->load($data);
+                        $modelsSampel[$indexAnalisis][$indexSampel] = $modelSampel;
+                        $valid = $modelSampel->validate();
+                    }
+                }
             }
 
-            // validate all models
-            $valid = $modelCustomer->validate();
-            $valid = Model::validateMultiple($modelsAddress) && $valid;
+            $oldSampelsIDs = ArrayHelper::getColumn($oldSampels, 'id');
+            $deletedSampelsIDs = array_diff($oldSampelsIDs, $sampelsIDs);
 
             if ($valid) {
-                $transaction = \Yii::$app->db->beginTransaction();
+                $transaction = Yii::$app->db->beginTransaction();
                 try {
-                    if ($flag = $modelCustomer->save(false)) {
-                        if (! empty($deletedIDs)) {
-                            Address::deleteAll(['id' => $deletedIDs]);
+                    if ($flag = $model->save(false)) {
+
+                        if (! empty($deletedSampelsIDs)) {
+                            Sampel::deleteAll(['id' => $deletedSampelsIDs]);
                         }
-                        foreach ($modelsAddress as $modelAddress) {
-                            $modelAddress->customer_id = $modelCustomer->id;
-                            if (! ($flag = $modelAddress->save(false))) {
-                                $transaction->rollBack();
+
+                        if (! empty($deletedKanalisisIDs)) {
+                            KategoriAnalisis::deleteAll(['id' => $deletedKanalisisIDs]);
+                        }
+
+                        foreach ($modelsKAnalisis as $indexAnalisis => $modelKAnalisis) {
+
+                            if ($flag === false) {
                                 break;
+                            }
+
+                            $modelKAnalisis->request_id = $model->id;
+
+                            if (!($flag = $modelKAnalisis->save(false))) {
+                                break;
+                            }
+
+                            if (isset($modelsSampel[$indexAnalisis]) && is_array($modelsSampel[$indexAnalisis])) {
+                                foreach ($modelsSampel[$indexAnalisis] as $indexSampel => $modelSampel) {
+                                    $modelSampel->kategori_analisis_id = $modelKAnalisis->id;
+                                    if (!($flag = $modelSampel->save(false))) {
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
+
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $modelCustomer->id]);
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    } else {
+                        $transaction->rollBack();
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();
@@ -196,8 +286,10 @@ class AnalysisRequestController extends Controller
         }
 
         return $this->render('update', [
-            'modelCustomer' => $modelCustomer,
-            'modelsAddress' => (empty($modelsAddress)) ? [new Address] : $modelsAddress
+            'model' => $model,
+            'modelsKAnalisis' => (empty($modelsKAnalisis)) ? [new KategoriAnalisis] : $modelsKAnalisis,
+            'modelsSampel' => (empty($modelsSampel)) ? [[new Sampel]] : $modelsSampel,
+            'pemohon' => $pemohon,
         ]);
     }
     
@@ -326,13 +418,12 @@ class AnalysisRequestController extends Controller
     public function actionPermohonanAnalisis($id) {
     // get your HTML raw content without any layouts or scripts
         $model = $this->findModel($id);
-        $lpsbId = $model->id;
-        $sampel = $this->findSampel($lpsbId);
-        $pemohon = $this->findPemohon($lpsbId);
+        $pemohon = $this->findPemohon($id);
+        $data = $this->findDataJasaLayanan($id);
         $content = $this->renderPartial('permohonanAnalisis', [
             'model' => $model,
-            'sampel' => $sampel,
             'pemohon' => $pemohon,
+            'data' => $data,
         ]);
      
         // setup kartik\mpdf\Pdf component
@@ -419,7 +510,12 @@ class AnalysisRequestController extends Controller
     public function actionDelete($id)
     {
         $this->checkPrivilege();
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $name = $model->lpsb_order_no;
+
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('success', 'Record  <strong>"' . $name . '"</strong> deleted successfully.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -446,6 +542,15 @@ class AnalysisRequestController extends Controller
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Sampel does not exist.');
+        }
+    }
+
+    public function findDataJasaLayanan($lpsbId)
+    {
+        if (($model = DataJasaLayanan::find()->where(['=', 'id', $lpsbId])->asArray()->all()) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested Data does not exist.');
         }
     }
 

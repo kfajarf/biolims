@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_permohonanAnalisis', [
         'model' => $model,
-        'sampel' => $sampel,
         'pemohon' => $pemohon,
+        'data' => $data,
     ]) ?>
 
 </div>

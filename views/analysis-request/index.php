@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use app\models\ViewSampelSearch;
+use app\models\DataJasaLayananSearch;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
 use app\models\AnalysisRequest;
@@ -187,7 +187,7 @@ for ($idx=1; $idx <= 12; $idx++)
 
     
     <div class= "row" style="padding: 15px">
-    <div style="border-top: 7px solid rgba(0, 100, 170, 1); overflow-x: auto; white-space: nowrap; background-color: white; padding: 10px 10px 0px 10px">
+    <div style="border-top: 7px solid rgba(0, 100, 170, 1); overflow-x: hidden; white-space: nowrap; background-color: white; padding: 10px 10px 0px 10px">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -200,8 +200,8 @@ for ($idx=1; $idx <= 12; $idx++)
                 },
                 'detail' => function($model, $key, $index, $column)
                 {
-                    $searchModel = new ViewSampelSearch();
-                    $searchModel -> request_id = $model -> id;
+                    $searchModel = new DataJasaLayananSearch();
+                    $searchModel -> id = $model -> id;
                     $dataProvider = $searchModel -> search(Yii::$app-> request-> queryParams);
 
                     return Yii::$app-> controller-> renderPartial('_sampels', [
@@ -237,6 +237,15 @@ for ($idx=1; $idx <= 12; $idx++)
             //'dp',
             //'sisa',
             //'keterangan:ntext',
+            [
+                'attribute'=>'status',
+                'format'=>'raw',
+                'value' => function($model)
+                {
+                    if($model->status == 'belum lunas') return Html::a('Lunas',['lunas', 'id' => $model->id], ['class' => 'btn btn-primary']);
+                    else return 'LUNAS';
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

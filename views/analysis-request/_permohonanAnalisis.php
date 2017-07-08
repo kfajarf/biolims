@@ -14,11 +14,12 @@
 	<META NAME="ShareDoc" CONTENT="false">
 	<STYLE TYPE="text/css">
 	<!--
-		@page { size: 11.69in 8.27in; margin-left: 0.5in; margin-right: 0.5in; margin-top: 0.7in; margin-bottom: 0.4in }
-		P { margin-bottom: 0.08in; direction: ltr; color: #000000; line-height: 100%; widows: 2; orphans: 2 }
-		P.western { font-family: "Arial", serif; font-size: 11pt }
-		P.cjk { font-family: "Times New Roman"; font-size: 11pt; so-language: en-US }
-		P.ctl { font-family: "Times New Roman"; font-size: 10pt }
+		p {
+			font-size: 2pt;
+		}
+		td {
+			font-size: 2pt;
+		}
 	-->
 	</STYLE>
 </HEAD>
@@ -132,7 +133,6 @@
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 
-
 <!--//////////////////////////////////////BEFORE///////////////////////////////////////-->
 <TABLE CLASS="mycell" STYLE="overflow: nowrap;" WIDTH=1005 BORDER=1 BORDERCOLOR="#00000a" CELLPADDING="1px" CELLSPACING=0>
 	<TR>
@@ -144,8 +144,7 @@
 			SAMPEL</B></FONT></P>
 		</TD>
 		<TD ROWSPAN=2  WIDTH="22%">
-			<P CLASS="western"><FONT FACE="Tahoma, serif"><B>JENIS &amp;
-			METODE ANALISIS</B></FONT></P>
+			<P CLASS="western"><FONT FACE="Tahoma, serif"><B>METODE ANALISIS</B></FONT></P>
 		</TD>
 		<TD ROWSPAN=2 WIDTH="10%">
 			<P CLASS="western" ALIGN=CENTER><FONT FACE="Tahoma, serif"><B>SAMPEL
@@ -180,29 +179,30 @@
 	<!-- DATA SECTION START -->
 	
 	<?php for ($idx = 0; $idx < 14; $idx++) {
-		$isDataExist = array_key_exists($idx, $sampel); 
+		$isDataExist = array_key_exists($idx, $data); 
 		echo "<TR CLASS='mycell' VALIGN=TOP>";
 		if ($isDataExist) {
-			$data = $sampel[$idx];
+			$dataRow = $data[$idx];
+			// var_dump($data[$idx]['id']);die();
 			echo "<TD ALIGN=center >
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".($idx+1)."</FONT></P>
+					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".($idx+1)."</FONT></P>
 				</TD>
 				<div>
 					<TD>
-						<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['jenis']."</FONT></P>
+						<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['analisis']."</FONT></P>
 					</TD>
 					<TD>
-						<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['kemasan']."</FONT></P>
+						<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['kemasan']."</FONT></P>
 					</TD>
 					<TD ALIGN=center>
-						<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['jumlah']."</FONT></P>
+						<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['jumlah']."</FONT></P>
 					</TD>
 				</div>
 				<TD>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['jenis_metode_analisis']."</FONT></P>
+					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['jenis_metode_analisis']."</FONT></P>
 				</TD>
 				<TD>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>".$data['nama_sampel']."</FONT></P>
+					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['nama_sampel']."</FONT></P>
 				</TD>";
 		} else {
 			echo "<TD><P><BR></P></TD>
@@ -216,56 +216,56 @@
 		if ($idx == 0) {
 			if($model-> status_pengujian === "biasa")
 			{echo "<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Diterima
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
 					tgl:</FONT></FONT></P>
 					<P>".$model->tanggal_diterima."</P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Diterima
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
 					tgl:</FONT></FONT></P>
 				</TD>";
 			} else {
 			echo "<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Diterima
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
 					tgl:</FONT></FONT></P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Diterima
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
 					tgl:</FONT></FONT></P>
 					<P>".$model->tanggal_diterima."</FONT></P>
 				</TD>";
 			}
 			echo "<TD ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><B>Total: <br>".$model-> total_biaya."</B></FONT></P>
+					<P><FONT FACE='Tahoma, serif'><B>Total: <br>".\Yii::$app->formatter->format($model-> total_biaya,['decimal',0]).", -</B></FONT></P>
 				</TD>";
 		} else if ($idx == 2) {
 			if($model -> status_pengujian === "biasa")
 			{echo "<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Selesai
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
 					tgl:</FONT></FONT></P>
 					<P>".$model->tanggal_selesai."</P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Selesai
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
 					tgl:</FONT></FONT></P>
 				</TD>";
 			} else {
 			echo "<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Selesai
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
 					tgl:</FONT></FONT></P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2 STYLE='font-size: 9pt'>Selesai
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
 					tgl:</FONT></FONT></P>
 					<P>".$model->tanggal_selesai."</P>
 				</TD>";
 			}
 			echo "<TD>
-					<P><FONT FACE='Tahoma, serif'><B>DP: ".$model-> dp."</B></FONT></P>
+					<P><FONT FACE='Tahoma, serif'><B>DP: ".\Yii::$app->formatter->format($model-> dp,['decimal',0]).", -</B></FONT></P>
 				</TD>";
 		} else if ($idx == 3) {
 			echo "<TD ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><B>SISA: <br>".$model-> sisa."</B></FONT></P>
+					<P><FONT FACE='Tahoma, serif'><B>SISA: <br>".\Yii::$app->formatter->format($model-> sisa,['decimal',0]).", -</B></FONT></P>
 				</TD>";
 		} elseif ($idx == 5) {
 			echo "<TD ROWSPAN=9></TD><TD ROWSPAN=9></TD><TD ROWSPAN=9></TD>";

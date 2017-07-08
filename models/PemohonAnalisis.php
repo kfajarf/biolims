@@ -34,10 +34,12 @@ class PemohonAnalisis extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama_lengkap', 'institusi_perusahaan', 'alamat', 'telp_fax', 'no_hp', 'email'], 'required'],
+            [['nama_lengkap', 'institusi_perusahaan', 'alamat', 'no_hp', 'email'], 'required'],
             [['alamat'], 'string'],
             [['request_id'], 'integer'],
             [['email'], 'email'],
+            [['telp_fax'], 'safe'],
+            [['telp_fax'], 'default', 'value' => '-'],
             [['nama_lengkap', 'institusi_perusahaan', 'telp_fax', 'no_hp', 'email'], 'string', 'max' => 100],
             [['request_id'], 'exist', 'skipOnError' => true, 'targetClass' => AnalysisRequest::className(), 'targetAttribute' => ['request_id' => 'id']],
         ];
