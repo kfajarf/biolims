@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\AnalysisRequestData;
-use app\models\AnalysisRequestDataSearch;
+use app\models\DataJasaLayananSearch;
 use app\models\ContactForm;
 
 class SiteController extends Controller
@@ -54,7 +54,7 @@ class SiteController extends Controller
         if(\Yii::$app->user->isGuest)
             return $this->actionLogin();
         else {
-            $searchModel = new AnalysisRequestDataSearch();
+            $searchModel = new DataJasaLayananSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [

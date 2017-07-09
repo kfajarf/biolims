@@ -58,10 +58,10 @@ class DataJasaLayananSearch extends DataJasaLayanan
 
         // grid filtering conditions
         $query->andFilterWhere([
+            'id' => $this->id,
         ]);
 
         $query
-            ->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'lpsb_order_no', $this->lpsb_order_no])
             ->andFilterWhere(['like', 'kategori', $this->kategori])
             ->andFilterWhere(['like', 'nama_lengkap', $this->nama_lengkap])

@@ -30,156 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- <h1><?= Html::encode($this->title) ?></h1> -->
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <div class="row" style="padding-left: 15px; padding-right: 15px">
-      <div class="col-md-7 line" style="padding-right: 0px">
-      <div id="analisis-sampel-linechart"></div><br>
-        <?php 
-        $biasa = [];
-        $percepatan = [];
-        for ($idx=1; $idx <= 12; $idx++) {
-          $eachMonthBiasa = \Yii::$app->db->createCommand("Select count(id) as jumlah from analysis_request where month(tanggal_diterima) = $idx and status_pengujian = 'biasa'")->queryOne();
-          $eachMonthPercepatan = \Yii::$app->db->createCommand("Select count(id) as jumlah from analysis_request where month(tanggal_diterima) = $idx and status_pengujian = 'percepatan'")->queryOne();  
-          $biasa[$idx] = $eachMonthBiasa['jumlah'];
-          $percepatan[$idx] = $eachMonthPercepatan['jumlah'];
-        };
-        $this->registerJs("
-            Highcharts.chart('analisis-sampel-linechart', {
-
-            title: {
-                text: 'Analisis Sampel'
-            },
-
-            subtitle: {
-                text: 'Perbandingan Status Pengujian Permohonan Analisis'
-            },
-
-            yAxis: {
-                title: {
-                    text: 'Jumlah Permintaan'
-                }
-            },
-
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            },
-
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
-
-            credits: {
-                enabled: false
-            },
-
-            series: [{
-                name: 'Biasa',
-                data: [$biasa[1], $biasa[2], $biasa[3], $biasa[4], $biasa[5], $biasa[6], $biasa[7], $biasa[8], $biasa[9], $biasa[10], $biasa[11], $biasa[12]]
-            }, {
-                name: 'Percepatan',
-                data: [$percepatan[1], $percepatan[2], $percepatan[3], $percepatan[4], $percepatan[5], $percepatan[6], $percepatan[7], $percepatan[8], $percepatan[9], $percepatan[10], $percepatan[11], $percepatan[12]]
-            }]
-
-        });
-        ")?>
-        </div>
-      <div class="col-md-5 line">
-      <div id="kajiulang-barchart"></div><br>
-        <?php 
-        $metode = [];
-        $peralatan = [];
-        $personel = [];
-        $bahanKimia = [];
-        $akomodasi = [];
-        for ($idx=0; $idx <= 1; $idx++) {
-          $metodeData = \Yii::$app->db->createCommand("Select count(*) as jumlah from kaji_ulang where metode = $idx")->queryOne();
-          $peralatanData = \Yii::$app->db->createCommand("Select count(*) as jumlah from kaji_ulang where peralatan = $idx")->queryOne();
-          $personelData = \Yii::$app->db->createCommand("Select count(*) as jumlah from kaji_ulang where personel = $idx")->queryOne();
-          $bahanKimiaData = \Yii::$app->db->createCommand("Select count(*) as jumlah from kaji_ulang where bahan_kimia = $idx")->queryOne();
-          $akomodasiData = \Yii::$app->db->createCommand("Select count(*) as jumlah from kaji_ulang where kondisi_akomodasi = $idx")->queryOne();
-          $metode[$idx] = $metodeData['jumlah'];
-          $peralatan[$idx] = $peralatanData['jumlah'];
-          $personel[$idx] = $personelData['jumlah'];
-          $bahanKimia[$idx] = $bahanKimiaData['jumlah'];
-          $akomodasi[$idx] = $akomodasiData['jumlah'];
-        };
-        $this->registerJs("
-            Highcharts.chart('kajiulang-barchart', {
-                chart: {
-                type: 'bar'
-            },
-            title: {
-                text: 'Kompetensi Sumber Daya Laboratorium'
-            },
-            subtitle: {
-                text: 'Kaji Ulang Permintaan, Tender, dan Kontrak'
-            },
-            xAxis: {
-                categories: ['Metode', 'Peralatan', 'Personel', 'Bahan Kimia', 'Akomodasi'],
-                title: {
-                    text: 'Parameter Pengujian'
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                },
-                labels: {
-                    overflow: 'justify'
-                }
-            },
-            tooltip: {
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        enabled: true
-                    }
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -40,
-                y: 80,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-                shadow: true
-            },
-            credits: {
-                enabled: false
-            },
-            series: [{
-                name: 'Internal',
-                data: [
-                  $metode[1],
-                  $peralatan[1],
-                  $personel[1],
-                  $bahanKimia[1],
-                  $akomodasi[1],
-                ]
-            }, {
-                name: 'Eksternal',
-                data: [
-                  $metode[0],
-                  $peralatan[0],
-                  $personel[0],
-                  $bahanKimia[0],
-                  $akomodasi[0],
-                ]
-            }]
-        });
-        ")?>
-        </div>
-    </div>
-    <br>
-    <div class="row" style="padding-left: 15px; padding-right: 15px">
-      <div class="col-md-8 line">
-      <div id="container"></div><br>
+    <div class="row" >
+      <div class="col-md-7">
+      <div class="line" style="padding-left: 0px">
+      <div id="jasa_layanan_barChart"></div>
         <?php 
         $jumlahJasa = [];
         for ($idx=1; $idx <= 12; $idx++) {
@@ -187,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
           $jumlahJasa[$idx] = $eachMonth['jumlah'];
         };
         $this->registerJs("
-            Highcharts.chart('container', {
+            Highcharts.chart('jasa_layanan_barChart', {
                 chart: {
                     type: 'column'
                 },
@@ -216,6 +70,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         borderWidth: 0
                     }
                 },
+                credits: {
+                    enabled: false
+                },
+
                 series: [{
                     name: 'Sasaran Mutu',
                     color: 'rgba(165,170,217,.3)',
@@ -232,17 +90,170 @@ $this->params['breadcrumbs'][] = $this->title;
             });
         ")?>
         </div>
+        </div>
+    <div class="col-md-5" style="padding-left: 0px">
+    <div class="line" >
+    <div id="kategori-klien"></div>
+        <?php 
+            $data = [];
+            $total = 0;
+            
+            $data1 = \Yii::$app->db->createCommand("select kategori, count(*) as jumlah from ((select lpsb_order_no, kategori from total_data_jasa_layanan group by lpsb_order_no) as test) where kategori = 'Internal'")->queryOne();
+            $data2 = \Yii::$app->db->createCommand("select kategori, count(*) as jumlah from ((select lpsb_order_no, kategori from total_data_jasa_layanan group by lpsb_order_no) as test) where kategori = 'Mahasiswa'")->queryOne();
+            $data3 = \Yii::$app->db->createCommand("select kategori, count(*) as jumlah from ((select lpsb_order_no, kategori from total_data_jasa_layanan group by lpsb_order_no) as test) where kategori = 'Instansi Pemerintah'")->queryOne();
+            $data4 = \Yii::$app->db->createCommand("select kategori, count(*) as jumlah from ((select lpsb_order_no, kategori from total_data_jasa_layanan group by lpsb_order_no) as test) where kategori = 'Perusahaan'")->queryOne();
+            $data5 = \Yii::$app->db->createCommand("select kategori, count(*) as jumlah from ((select lpsb_order_no, kategori from total_data_jasa_layanan group by lpsb_order_no) as test) where kategori = 'Individu'")->queryOne();  
+            $data[1] = $data1['jumlah'];
+            $data[2] = $data2['jumlah'];
+            $data[3] = $data3['jumlah'];
+            $data[4] = $data4['jumlah'];
+            $data[5] = $data5['jumlah'];
+            $total = $data[1] + $data[2] + $data[3] + $data[4] + $data[5];
+            
+
+            for ($dataPercentage=[], $idx=1; $idx <= 5; $idx++) { 
+                $dataPercentage[$idx] = ($data[$idx] / $total)*100;
+            }
+            // die();
+        $this->registerJs("
+            $(document).ready(function () {
+                // Build the chart
+                Highcharts.chart('kategori-klien', {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Proporsi Kategori Pengguna Jasa Layanan'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: 'Proporsi',
+                        colorByPoint: true,
+                        data: [{
+                            name: 'Individu',
+                            y: $dataPercentage[5]
+                        }, {
+                            name: 'Perusahaan',
+                            y: $dataPercentage[4]
+                        }, {
+                            name: 'Instansi Pemerintah',
+                            y: $dataPercentage[3]
+                        }, {
+                            name: 'Internal',
+                            y: $dataPercentage[1],
+                        }, {
+                            name: 'Mahasiswa',
+                            y: $dataPercentage[2],
+                            sliced: true,
+                            selected: true
+                        }]
+                    }]
+                });
+            });
+        ")?>
+        </div>
+        </div>
     </div>
     <br>
+    <div class="row" style="padding: 15px">
+    <div class="line col-md-7">
+    <div id="jenis-analisis" style="min-width: 310px; height: 350px; max-width: 600px; margin: 0 auto"></div>
+        <script type="text/javascript">
+            var analisis = [], test=[1];
+        <?php 
+            $analisis = [];
+            $jumlah = [];
+            $asd = 'LLOL';
+            $test = \Yii::$app->db->createCommand("select analisis, jumlah from frekuensi_pilihan_jenis_analisis")->queryAll();
+            foreach ($test as $idx => $testItem) { 
+                ?>
+                analisis.push({
+                    name: '<?= ($testItem['analisis'] ? $testItem['analisis'] : "undefined") ?>',
+                    y: <?= $testItem['jumlah'] ?>,
+                });
+            <?php }
+        ?>
+        // document.write(analisis);
+        </script> 
+        <?php 
+            // var_dump($test[0]['analisis']==NULL);die();
+            // var_dump($analisis);
+            // die();
+        $this->registerJs("
+            Highcharts.chart('jenis-analisis', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Browser market shares January, 2015 to May, 2015'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                credits:{
+                    enabled:false
+                },
+                series: [{
+                    name: 'Proporsi',
+                    colorByPoint: true,
+                    data: analisis,
+                }]
+            });
+        ")?>
+
+        </div>
+        </div>
     <?php
         $gridColumns = [
+            // 'id',
             'lpsb_order_no',
             'kategori',
+            'nama_lengkap',
+            'institusi_perusahaan',
+            'alamat',
+            'telp_fax',
+            'no_hp',
+            'email',
+            'analisis',
+            'sampel_id',
             'nama_sampel',
-            'jenis',
             'kemasan',
             'jumlah',
-            'jenis_metode_analisis',
+            'metode',
             'status_pengujian',
             'tanggal_diterima',
             'tanggal_selesai',
@@ -250,6 +261,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'dp',
             'sisa',
             'keterangan',
+            'status',
         ];
 
         echo ExportMenu::widget([
@@ -277,13 +289,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'lpsb_order_no',
             'nama_sampel',
             [
-                'attribute' => 'jenis',
-                'value' => 'jenis',
-                'filter' => Html::activeDropDownList($searchModel, 'jenis', ArrayHelper::map(\app\models\JenisAnalisis::find()->all(), 'jenis', 'jenis'), ['class' => 'form-control', 'prompt' => '-- Jenis --']),
+                'attribute' => 'analisis',
+                'value' => 'analisis',
+                'filter' => Html::activeDropDownList($searchModel, 'analisis', ArrayHelper::map(\app\models\JenisAnalisis::find()->all(), 'jenis', 'jenis'), ['class' => 'form-control', 'prompt' => '-- Jenis --']),
             ],
             'kemasan',
             'jumlah',
-            'jenis_metode_analisis',
+            'metode',
             'status_pengujian',
             'tanggal_diterima',
             'tanggal_selesai',

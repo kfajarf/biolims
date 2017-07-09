@@ -139,23 +139,22 @@
 		<TD ROWSPAN=2 ALIGN=center WIDTH="5%">
 			<P CLASS="western" ALIGN=CENTER><FONT FACE="Tahoma, serif"><B>No.</B></FONT></P>
 		</TD>
-		<TD COLSPAN=3 VALIGN=TOP WIDTH="18%">
+		<TD COLSPAN=3 VALIGN=TOP WIDTH="21%">
 			<P CLASS="western" ALIGN=CENTER><FONT FACE="Tahoma, serif"><B>KONDISI
 			SAMPEL</B></FONT></P>
 		</TD>
-		<TD ROWSPAN=2  WIDTH="22%">
+		<TD ROWSPAN=2  WIDTH="27%">
 			<P CLASS="western"><FONT FACE="Tahoma, serif"><B>METODE ANALISIS</B></FONT></P>
 		</TD>
-		<TD ROWSPAN=2 WIDTH="10%">
+		<TD ALIGN=center ROWSPAN=2 WIDTH="10%">
 			<P CLASS="western" ALIGN=CENTER><FONT FACE="Tahoma, serif"><B>SAMPEL
 			ID</B></FONT></P>
 		</TD>
 		<TD COLSPAN=2 VALIGN=TOP WIDTH="25%">
 			<P CLASS="western"><FONT FACE="Tahoma, serif"><B>LAMA PENGUJIAN</B></FONT></P>
 		</TD>
-		<TD ROWSPAN=2 WIDTH="20%">
-			<P CLASS="western" ALIGN=CENTER><FONT FACE="Tahoma, serif"><B>BIAYA
-			PENGUJIAN (Rp)</B></FONT></P>
+		<TD ROWSPAN=2 WIDTH="12%">
+			<P CLASS="western" ALIGN=CENTER><FONT FACE="Tahoma, serif"><B>BIAYA<br>PENGUJIAN (Rp)</B></FONT></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -199,10 +198,10 @@
 					</TD>
 				</div>
 				<TD>
-					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['jenis_metode_analisis']."</FONT></P>
+					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['metode']."</FONT></P>
 				</TD>
-				<TD>
-					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['nama_sampel']."</FONT></P>
+				<TD ALIGN=center>
+					<P style='font-size: 8pt'><FONT FACE='Tahoma, serif'>".$dataRow['sampel_id']."</FONT></P>
 				</TD>";
 		} else {
 			echo "<TD><P><BR></P></TD>
@@ -216,23 +215,21 @@
 		if ($idx == 0) {
 			if($model-> status_pengujian === "biasa")
 			{echo "<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
-					tgl:</FONT></FONT></P>
-					<P>".$model->tanggal_diterima."</P>
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Diterima
+					tgl:<br>".$model->tanggal_diterima."</FONT></FONT></P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Diterima
 					tgl:</FONT></FONT></P>
 				</TD>";
 			} else {
 			echo "<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Diterima
 					tgl:</FONT></FONT></P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=2>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Diterima
-					tgl:</FONT></FONT></P>
-					<P>".$model->tanggal_diterima."</FONT></P>
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Diterima
+					tgl:<br>".$model->tanggal_diterima."</FONT></FONT></P>
 				</TD>";
 			}
 			echo "<TD ROWSPAN=2>
@@ -241,23 +238,21 @@
 		} else if ($idx == 2) {
 			if($model -> status_pengujian === "biasa")
 			{echo "<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
-					tgl:</FONT></FONT></P>
-					<P>".$model->tanggal_selesai."</P>
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Selesai
+					tgl:<br>".$model->tanggal_selesai."</FONT></FONT></P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Selesai
 					tgl:</FONT></FONT></P>
 				</TD>";
 			} else {
 			echo "<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Selesai
 					tgl:</FONT></FONT></P>
 				</TD>
 				<TD VALIGN=TOP ROWSPAN=3>
-					<P><FONT FACE='Tahoma, serif'><FONT SIZE=2>Selesai
-					tgl:</FONT></FONT></P>
-					<P>".$model->tanggal_selesai."</P>
+					<P><FONT FACE='Tahoma, serif'><FONT SIZE=3>Selesai
+					tgl:<br>".$model->tanggal_selesai."</FONT></FONT></P>
 				</TD>";
 			}
 			echo "<TD>
