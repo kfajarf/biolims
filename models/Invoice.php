@@ -32,10 +32,10 @@ class Invoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['no_invoice', 'total_biaya', 'terbilang', 'tanggal_penerbitan_invoice', 'id_peneliti'], 'required'],
-            [['total_biaya', 'terbilang', 'id_peneliti'], 'integer'],
-            [['tanggal_penerbitan_invoice'], 'safe'],
-            [['no_invoice'], 'string', 'max' => 100],
+            [['no_invoice', 'total_biaya', 'terbilang', 'tanggal_penerbitan_invoice'], 'required'],
+            [['total_biaya', 'id_peneliti'], 'integer'],
+            [['tanggal_penerbitan_invoice','id_peneliti'], 'safe'],
+            [['no_invoice', 'terbilang'], 'string', 'max' => 100],
             [['id_peneliti'], 'exist', 'skipOnError' => true, 'targetClass' => Peneliti::className(), 'targetAttribute' => ['id_peneliti' => 'id']],
         ];
     }

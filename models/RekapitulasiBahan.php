@@ -33,8 +33,10 @@ class RekapitulasiBahan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama_bahan', 'spesifikasi', 'jumlah', 'harga', 'keterangan', 'id_peneliti'], 'required'],
+            [['nama_bahan'], 'required'],
             [['jumlah', 'harga', 'id_peneliti'], 'integer'],
+            [['spesifikasi', 'jumlah', 'harga', 'keterangan', 'id_peneliti'], 'safe'],
+            [['jumlah', 'harga'], 'default', 'value' => 0],
             [['nama_bahan', 'spesifikasi', 'keterangan'], 'string', 'max' => 100],
             [['id_peneliti'], 'exist', 'skipOnError' => true, 'targetClass' => Peneliti::className(), 'targetAttribute' => ['id_peneliti' => 'id']],
         ];

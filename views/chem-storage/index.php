@@ -44,8 +44,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'pemilik',
             'tanggal_masuk',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{deleteLog},{view},{delete}',
+                'buttons' => [
+                    'deleteLog' => function($url, $model){
+                        $url = Url::to(['lab-kit/delete-log', 'id' => $model->id]);
+                        return Html::a('<span class="fa fa-trash"></span>', $url, [
+                            'title' => 'delete',
+                            'data-confirm' => Yii::t('yii', 'hapus jadwal penggunaan?'),
+                            'data-method' => 'post',
+                        ]);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 </div>

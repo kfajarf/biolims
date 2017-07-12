@@ -23,7 +23,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'institusi') ?>
 
-    <?= $form->field($model, 'nrp_nim') ?>
+    <?= $form->field($model, 'departemen_id') ?>
+
+    <?php // echo $form->field($model, 'nrp_nim') ?>
 
     <?php // echo $form->field($model, 'no_handphone') ?>
 

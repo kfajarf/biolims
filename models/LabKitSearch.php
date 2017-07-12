@@ -19,7 +19,7 @@ class LabKitSearch extends LabKit
     {
         return [
             [['id', 'jangka_kalibrasi'], 'integer'],
-            [['nama_alat', 'tanggal_mulai', 'kalibrasi_selanjutnya', 'status_penggunaan'], 'safe'],
+            [['nama_alat', 'tanggal_mulai', 'kalibrasi_selanjutnya', 'status_penggunaan','status_kalibrasi'], 'safe'],
         ];
     }
 
@@ -66,7 +66,8 @@ class LabKitSearch extends LabKit
         ]);
 
         $query->andFilterWhere(['like', 'nama_alat', $this->nama_alat])
-            ->andFilterWhere(['like', 'status_penggunaan', $this->status_penggunaan]);
+            ->andFilterWhere(['like', 'status_penggunaan', $this->status_penggunaan])
+            ->andFilterWhere(['like', 'status_kalibrasi', $this->status_kalibrasi]);
 
         return $dataProvider;
     }

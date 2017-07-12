@@ -11,6 +11,7 @@ use Yii;
  * @property string $nama_lengkap
  * @property string $tempat_tanggal_lahir
  * @property string $institusi
+ * @property integer $departemen_id
  * @property string $nrp_nim
  * @property string $no_handphone
  * @property string $email
@@ -25,6 +26,7 @@ use Yii;
  *
  * @property Invoice[] $invoices
  * @property PembimbingPenelitian[] $pembimbingPenelitians
+ * @property Departemen $departemen
  * @property RekapitulasiBahan[] $rekapitulasiBahans
  * @property SampelPenelitian[] $sampelPenelitians
  * @property TempatPenelitianLain[] $tempatPenelitianLains
@@ -45,10 +47,11 @@ class Peneliti extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama_lengkap', 'tempat_tanggal_lahir', 'institusi', 'nrp_nim', 'no_handphone', 'email', 'alamat_dan_no_telp_bogor', 'alamat_dan_no_telp_orang_tua', 'judul_penelitian', 'tanggal_masuk_lpsb', 'uang_masuk_lpsb', 'deposit_lpsb', 'keterangan'], 'required'],
-            [['tanggal_masuk_lpsb'], 'safe'],
-            [['uang_masuk_lpsb', 'deposit_lpsb', 'biaya_hasil_rekapitulasi'], 'integer'],
+            [['nama_lengkap', 'tempat_tanggal_lahir', 'institusi', 'departemen_id', 'nrp_nim', 'no_handphone', 'email', 'alamat_dan_no_telp_bogor', 'alamat_dan_no_telp_orang_tua', 'judul_penelitian', 'tanggal_masuk_lpsb', 'uang_masuk_lpsb', 'deposit_lpsb', 'keterangan'], 'required'],
+            [['departemen_id', 'uang_masuk_lpsb', 'deposit_lpsb', 'biaya_hasil_rekapitulasi'], 'integer'],
+            [['tanggal_masuk_lpsb','id'], 'safe'],
             [['nama_lengkap', 'tempat_tanggal_lahir', 'institusi', 'nrp_nim', 'no_handphone', 'email', 'alamat_dan_no_telp_bogor', 'alamat_dan_no_telp_orang_tua', 'judul_penelitian', 'keterangan'], 'string', 'max' => 100],
+            [['departemen_id'], 'exist', 'skipOnError' => true, 'targetClass' => Departemen::className(), 'targetAttribute' => ['departemen_id' => 'id']],
         ];
     }
 
@@ -62,6 +65,7 @@ class Peneliti extends \yii\db\ActiveRecord
             'nama_lengkap' => 'Nama Lengkap',
             'tempat_tanggal_lahir' => 'Tempat Tanggal Lahir',
             'institusi' => 'Institusi',
+            'departemen_id' => 'Departemen',
             'nrp_nim' => 'Nrp Nim',
             'no_handphone' => 'No Handphone',
             'email' => 'Email',
@@ -72,7 +76,7 @@ class Peneliti extends \yii\db\ActiveRecord
             'uang_masuk_lpsb' => 'Uang Masuk Lpsb',
             'deposit_lpsb' => 'Deposit Lpsb',
             'keterangan' => 'Keterangan',
-            'biaya_hasil_rekapitulasi' => 'Biaya Hasil Rekapitulasi',
+            'biaya_hasil_rekapitulasi' => 'Total Biaya',
         ];
     }
 
@@ -87,7 +91,7 @@ class Peneliti extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPembimbingPenelitians()
+    public function getPembimbingPenelitian()
     {
         return $this->hasMany(PembimbingPenelitian::className(), ['id_peneliti' => 'id']);
     }
@@ -95,7 +99,15 @@ class Peneliti extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRekapitulasiBahans()
+    public function getDepartemen()
+    {
+        return $this->hasOne(Departemen::className(), ['id' => 'departemen_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRekapitulasiBahan()
     {
         return $this->hasMany(RekapitulasiBahan::className(), ['id_peneliti' => 'id']);
     }
@@ -103,15 +115,15 @@ class Peneliti extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSampelPenelitians()
+    public function getSampelInvoice()
     {
-        return $this->hasMany(SampelPenelitian::className(), ['id_peneliti' => 'id']);
+        return $this->hasMany(SampelInvoice::className(), ['id_peneliti' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTempatPenelitianLains()
+    public function getTempatPenelitianLain()
     {
         return $this->hasMany(TempatPenelitianLain::className(), ['id_peneliti' => 'id']);
     }

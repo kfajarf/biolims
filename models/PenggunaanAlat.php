@@ -33,7 +33,8 @@ class PenggunaanAlat extends \yii\db\ActiveRecord
         return [
             [['nama_pengguna', 'nim', 'kit_id', 'tanggal_penggunaan'], 'required'],
             [['kit_id'], 'integer'],
-            [['tanggal_penggunaan'], 'safe'],
+            [['tanggal_penggunaan', 'status_pengembalian_alat'], 'safe'],
+            [['status_pengembalian_alat'], 'default', 'value' => 'belum dikembalikan'],
             [['nama_pengguna'], 'string', 'max' => 100],
             [['nim'], 'string', 'max' => 30],
             [['kit_id'], 'exist', 'skipOnError' => true, 'targetClass' => LabKit::className(), 'targetAttribute' => ['kit_id' => 'id']],
@@ -47,6 +48,7 @@ class PenggunaanAlat extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'status_pengembalian_alat' => 'Status Pengembalian Alat',
             'nama_pengguna' => 'Nama Pengguna',
             'nim' => 'NIM',
             'kit_id' => 'Nama Alat',

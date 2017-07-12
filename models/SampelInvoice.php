@@ -17,14 +17,14 @@ use Yii;
  *
  * @property Peneliti $idPeneliti
  */
-class SampelPenelitian extends \yii\db\ActiveRecord
+class SampelInvoice extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'sampel_penelitian';
+        return 'sampel_invoice';
     }
 
     /**
@@ -33,8 +33,9 @@ class SampelPenelitian extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sampel', 'kode', 'analisis', 'jumlah', 'harga', 'id_peneliti'], 'required'],
+            [['sampel', 'kode'], 'required'],
             [['jumlah', 'harga', 'id_peneliti'], 'integer'],
+            [['id_peneliti', 'analisis', 'jumlah', 'harga'], 'safe'],
             [['sampel', 'kode', 'analisis'], 'string', 'max' => 100],
             [['id_peneliti'], 'exist', 'skipOnError' => true, 'targetClass' => Peneliti::className(), 'targetAttribute' => ['id_peneliti' => 'id']],
         ];

@@ -138,8 +138,8 @@ class LabKitController extends Controller
         $pengguna = new PenggunaanAlat;
 
         if ($pengguna->load(Yii::$app->request->post())) {
-            $isAlreadyBorrowed = \app\models\PenggunaanAlat::find()->where(['kit_id' => $pengguna->kit_id, 'tanggal_penggunaan' => $pengguna->tanggal_penggunaan])->all();
-            if(count($isAlreadyBorrowed) > 1) {
+            $isAlreadyBorrowed = \app\models\PenggunaanAlat::find()->where(['kit_id' => $pengguna->kit_id, 'tanggal_penggunaan' => $pengguna->tanggal_penggunaan, 'status_pengembalian_alat' => 'belum dikembalikan'])->all();
+            if(count($isAlreadyBorrowed) > 0) {
                 throw new ForbiddenHttpException('Alat sudah dibooking pada tanggal tersebut');
                 // var_dump(count($isAlreadyBorrowed));die();
             }
@@ -189,7 +189,7 @@ class LabKitController extends Controller
         return $model->kalibrasi_selanjutnya;
     }
 
-    public function resetSchedule($id)
+    public function actionResetSchedule($id)
     {
         $model = LabKit::findOne($id);
         $today = strtotime(date('Y-m-d'))/*new \yii\db\Expression("NOW()")*/;
@@ -198,8 +198,10 @@ class LabKitController extends Controller
         if($today > $kalibrasi)
         {
             $model->kalibrasi_selanjutnya = $baru;
+            $model->status_kalibrasi = 'sudah dikalibrasi';
         }
-        $model->save();
+        if($model->save()) return $this->redirect(['index']);
+        else throw new Exception("Error Processing Request", 1);
     }
 
     public function checkDate($id)
@@ -216,22 +218,57 @@ class LabKitController extends Controller
         }
     }
 
+    public function setStatusKalibrasi($id)
+    {
+        $model = LabKit::findOne(['id'=>$id]);
+        if($model){
+            $model->status_kalibrasi = 'belum dikalibrasi';
+            $model->save();
+        }
+    }
+
+    public function setStatusPenggunaan($id)
+    {
+        $model = LabKit::findOne(['id'=>$id]);
+        if($model){
+            $model->status_penggunaan = 'digunakan';
+            $model->save();
+        }
+    }
+
     public function checkStatus($id)
     {
         $model = LabKit::find()->where(['id' => $id])->one();
         $today = date('Y-m-d');
-        $pengguna = PenggunaanAlat::find()->where(['kit_id' => $id, 'tanggal_penggunaan' => $today])->one();
-        // var_dump($pengguna->tanggal_penggunaan);
-        // die();
+        // var_dump($today);die();
+        $pengguna = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->id, 'status_pengembalian_alat' => 'belum dikembalikan'])->andWhere(['=', 'tanggal_penggunaan', $today])->orderBy(['tanggal_penggunaan' => SORT_ASC])->one();
         if($pengguna != null)
         {
             if($today == $pengguna->tanggal_penggunaan)
             {
                 $model->status_penggunaan = "digunakan";
             } 
+            if($today == $model->kalibrasi_selanjutnya)
+            {
+                $this->setStatusKalibrasi($model->id);
+            } 
         }
-        else $model->status_penggunaan = "tersedia";
         $model->save();
+    }
+
+    public function actionPengembalianAlat($id)
+    {
+        $pengguna = PenggunaanAlat::findOne(['id' => $id]);
+        $model = LabKit::findOne(['id' => $pengguna->kit_id]);
+        if($model->status_penggunaan == 'digunakan'){
+            $model->status_penggunaan = 'tersedia';
+        }
+        // var_dump($model->status_penggunaan);die();
+        if($model->save()) {
+            $pengguna->status_pengembalian_alat = 'sudah dikembalikan';
+            if($pengguna->save()) return $this->redirect(['index']);
+            else throw new Exception("Error Processing Request", 1);
+        }     
     }
     
     public function checkPrivilege() {

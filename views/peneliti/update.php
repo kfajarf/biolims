@@ -12,10 +12,12 @@ $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="peneliti-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
     <?= $this->render('_form', [
         'model' => $model,
+        'modelsPembimbing' => $modelsPembimbing,
+        'modelsTempat' => $modelsTempat,
     ]) ?>
 
 </div>

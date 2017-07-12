@@ -19,7 +19,7 @@ class PenggunaanAlatSearch extends PenggunaanAlat
     {
         return [
             [['id', 'kit_id'], 'integer'],
-            [['nama_pengguna', 'nim', 'tanggal_penggunaan'], 'safe'],
+            [['nama_pengguna', 'nim', 'tanggal_penggunaan', 'status_pengembalian_alat'], 'safe'],
         ];
     }
 
@@ -66,7 +66,8 @@ class PenggunaanAlatSearch extends PenggunaanAlat
         ]);
 
         $query->andFilterWhere(['like', 'nama_pengguna', $this->nama_pengguna])
-            ->andFilterWhere(['like', 'nim', $this->nim]);
+            ->andFilterWhere(['like', 'nim', $this->nim])
+            ->andFilterWhere(['like', 'status_pengembalian_alat', $this->status_pengembalian_alat]);
 
         return $dataProvider;
     }

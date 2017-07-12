@@ -5,7 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Sampel;
+use app\models\DataJasaLayanan;
 
 /**
  * SampelSearch represents the model behind the search form about `app\models\Sampel`.
@@ -48,7 +48,7 @@ class DataJasaLayananSearch extends DataJasaLayanan
             'query' => $query,
         ]);
 
-        // $this->load($params);
+        $this->load($params);
 
         // if (!$this->validate()) {
         //     // uncomment the following line if you do not want to return any records when validation fails

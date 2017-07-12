@@ -29,8 +29,9 @@ class PembimbingPenelitian extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama_pembimbing', 'id_peneliti'], 'required'],
+            [['nama_pembimbing'], 'required'],
             [['id_peneliti'], 'integer'],
+            [['id_peneliti'], 'safe'],
             [['nama_pembimbing'], 'string', 'max' => 100],
             [['id_peneliti'], 'exist', 'skipOnError' => true, 'targetClass' => Peneliti::className(), 'targetAttribute' => ['id_peneliti' => 'id']],
         ];

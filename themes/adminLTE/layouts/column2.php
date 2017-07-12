@@ -43,7 +43,15 @@ use yii\helpers\Url;
                   ],
                   'items' => [
                       ['label'=>Yii::t('app','MAIN NAVIGATION'), 'options'=>['class'=>'header']],
-                      ['label' => ThemeNav::link('Data Report', 'fa fa-dashboard'), 'url' => ['/'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/']), 'visible'=>!Yii::$app->user->isGuest],
+                      ['label' => ThemeNav::link('Data Report', 'fa fa-dashboard'), 'url' => ['/'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/']), 'visible'=>!Yii::$app->user->isGuest, 'items' => [
+                          ['label' => (Yii::$app->controller->action->id == 'jasa-layanan' ? '&#10148; Jasa Layanan': 'Jasa Layanan' ), 'url' => ['/site/jasa-layanan'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->action->id == 'jasa-layanan' || (Yii::$app->controller->id == 'site' && Yii::$app->controller->action->id == 'index') || Yii::$app->controller->action->id == 'departemen-peneliti')), 'options'=>['class'=>'sidebar-menu header'],
+                          ],
+                          //ThemeNav::link('Surat Administrasi', 'fa fa-circle text-success')
+                          ['label' => (Yii::$app->controller->action->id == 'departemen-peneliti' ? '&#10148; Departemen Peneliti': 'Departemen Peneliti' ), 'url' => ['/site/departemen-peneliti'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->action->id == 'jasa-layanan' || (Yii::$app->controller->id == 'site' && Yii::$app->controller->action->id == 'index') || Yii::$app->controller->action->id == 'departemen-peneliti')), 'options'=>['class'=>'sidebar-menu header'],
+                          ],
+                        ],
+                      ],
+                      ['label' => ThemeNav::link('Kontak Admin', 'fa fa-user'), 'url' => ['/site/contact'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/site/contact']), 'visible'=>!Yii::$app->user->isGuest],
                       ['label' => ThemeNav::link('Surat Administrasi', 'fa fa-pencil-square-o'), 'url' => ['/analysis-request'], 'active' => (Yii::$app->controller->id == 'analysis-request'), 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement()), 'items' => [
                           ['label' => (Yii::$app->controller->id == 'analysis-request' ? '&#10148; Permohonan Analisis': 'Permohonan Analisis' ), 'url' => ['/analysis-request'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'analysis-request' || Yii::$app->controller->id == 'peneliti')), 'options'=>['class'=>'sidebar-menu header'],
                           ],

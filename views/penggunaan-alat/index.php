@@ -44,26 +44,36 @@ $this->params['breadcrumbs'][] = $this->title;
         Modal::end();
     ?>
 
-    <?php
-        $gridColumns = [
-            'nama_pengguna',
-            'nim',
-            'kit.nama_alat',
-            'tanggal_penggunaan',
-        ];
+    
+    <div class="row" style="padding-left: 15px;padding-right: 15px">
+        <div class="col-sm-6" style="padding-left: 0px;padding-right: 10px">
+            <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 0px">
+            <?php
+                $gridColumns = [
+                    'nama_pengguna',
+                    'nim',
+                    'kit.nama_alat',
+                    'tanggal_penggunaan',
+                ];
 
-        echo ExportMenu::widget([
-            'dataProvider' => $dataProvider,
-            'columns' => $gridColumns,
-            'exportConfig' => [
-                ExportMenu::FORMAT_TEXT => FALSE,
-                ExportMenu::FORMAT_PDF => FALSE,
-                ExportMenu::FORMAT_EXCEL => FALSE,
-                ExportMenu::FORMAT_CSV => FALSE,
-                ExportMenu::FORMAT_HTML => FALSE,
-            ],
-        ]);
-    ?>
+                echo ExportMenu::widget([
+                    'dataProvider' => $dataProvider,
+                    'columns' => $gridColumns,
+                    'exportConfig' => [
+                        ExportMenu::FORMAT_TEXT => FALSE,
+                        ExportMenu::FORMAT_PDF => FALSE,
+                        ExportMenu::FORMAT_EXCEL => FALSE,
+                        ExportMenu::FORMAT_CSV => FALSE,
+                        ExportMenu::FORMAT_HTML => FALSE,
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-sm-8" style="background-color: white; padding-top: 7px; padding-bottom: 7px">
+                <font size=2>Unduh Data Log Peminjaman</font>
+            </div>
+        </div>
+    </div>
 
     <?php Pjax::begin(); ?>
     <div class= "row" style="padding: 15px">

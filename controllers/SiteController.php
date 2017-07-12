@@ -8,7 +8,9 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\AnalysisRequestData;
-use app\models\DataJasaLayananSearch;
+use app\models\TotalDataJasaLayananSearch;
+use app\models\InfoDepartemenPenelitiSearch;
+use app\models\DataPenggunaJasaLayananSearch;
 use app\models\ContactForm;
 
 class SiteController extends Controller
@@ -54,15 +56,67 @@ class SiteController extends Controller
         if(\Yii::$app->user->isGuest)
             return $this->actionLogin();
         else {
-            $searchModel = new DataJasaLayananSearch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            //SM => SearchModel, DP => dataProvider
+            $smFrekuensiDepartemen = new \app\models\FrekuensiDepartemenSearch();
+            $dpFrekuensiDepartemen = $smFrekuensiDepartemen->search(Yii::$app->request->queryParams);
+            $smFrekuensiFakultas = new \app\models\FrekuensiFakultasSearch();
+            $dpFrekuensiFakultas = $smFrekuensiFakultas->search(Yii::$app->request->queryParams);
+            $smFrekuensiKlienJasaLayanan = new \app\models\FrekuensiKlienJasaLayananSearch();
+            $dpFrekuensiKlienJasaLayanan = $smFrekuensiKlienJasaLayanan->search(Yii::$app->request->queryParams);
+            $smFrekuensiPilihanJenisAnalisis = new \app\models\FrekuensiPilihanJenisAnalisisSearch();
+            $dpFrekuensiPilihanJenisAnalisis = $smFrekuensiPilihanJenisAnalisis->search(Yii::$app->request->queryParams);
+            $smFrekuensiJasaLayananPerBulan = new \app\models\FrekuensiJasaLayananPerBulanSearch();
+            $dpFrekuensiJasaLayananPerBulan = $smFrekuensiJasaLayananPerBulan->search(Yii::$app->request->queryParams);
 
             return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
+                'smFrekuensiDepartemen' => $smFrekuensiDepartemen,
+                'dpFrekuensiDepartemen' => $dpFrekuensiDepartemen,
+                'smFrekuensiFakultas' => $smFrekuensiFakultas,
+                'dpFrekuensiFakultas' => $dpFrekuensiFakultas,
+                'smFrekuensiKlienJasaLayanan' => $smFrekuensiKlienJasaLayanan,
+                'dpFrekuensiKlienJasaLayanan' => $dpFrekuensiKlienJasaLayanan,
+                'smFrekuensiPilihanJenisAnalisis' => $smFrekuensiPilihanJenisAnalisis,
+                'dpFrekuensiPilihanJenisAnalisis' => $dpFrekuensiPilihanJenisAnalisis,
+                'smFrekuensiJasaLayananPerBulan' => $smFrekuensiJasaLayananPerBulan,
+                'dpFrekuensiJasaLayananPerBulan' => $dpFrekuensiJasaLayananPerBulan,
             ]);
-            return $this->render('index');
         }
+    }
+
+    public function actionJasaLayanan()
+    {
+        $this->checkPrivilege();
+        $smFrekuensiKlienJasaLayanan = new \app\models\FrekuensiKlienJasaLayananSearch();
+        $dpFrekuensiKlienJasaLayanan = $smFrekuensiKlienJasaLayanan->search(Yii::$app->request->queryParams);
+        $smFrekuensiPilihanJenisAnalisis = new \app\models\FrekuensiPilihanJenisAnalisisSearch();
+        $dpFrekuensiPilihanJenisAnalisis = $smFrekuensiPilihanJenisAnalisis->search(Yii::$app->request->queryParams);
+        $smFrekuensiJasaLayananPerBulan = new \app\models\FrekuensiJasaLayananPerBulanSearch();
+        $dpFrekuensiJasaLayananPerBulan = $smFrekuensiJasaLayananPerBulan->search(Yii::$app->request->queryParams);
+
+        return $this->render('jasaLayanan', [
+            'smFrekuensiKlienJasaLayanan' => $smFrekuensiKlienJasaLayanan,
+            'dpFrekuensiKlienJasaLayanan' => $dpFrekuensiKlienJasaLayanan,
+            'smFrekuensiPilihanJenisAnalisis' => $smFrekuensiPilihanJenisAnalisis,
+            'dpFrekuensiPilihanJenisAnalisis' => $dpFrekuensiPilihanJenisAnalisis,
+            'smFrekuensiJasaLayananPerBulan' => $smFrekuensiJasaLayananPerBulan,
+            'dpFrekuensiJasaLayananPerBulan' => $dpFrekuensiJasaLayananPerBulan,
+        ]);
+    }
+
+    public function actionDepartemenPeneliti()
+    {
+        $this->checkPrivilege();
+        $smFrekuensiDepartemen = new \app\models\FrekuensiDepartemenSearch();
+        $dpFrekuensiDepartemen = $smFrekuensiDepartemen->search(Yii::$app->request->queryParams);
+        $smFrekuensiFakultas = new \app\models\FrekuensiFakultasSearch();
+        $dpFrekuensiFakultas = $smFrekuensiFakultas->search(Yii::$app->request->queryParams);
+
+        return $this->render('departemenPeneliti', [
+            'smFrekuensiDepartemen' => $smFrekuensiDepartemen,
+            'dpFrekuensiDepartemen' => $dpFrekuensiDepartemen,
+            'smFrekuensiFakultas' => $smFrekuensiFakultas,
+            'dpFrekuensiFakultas' => $dpFrekuensiFakultas,
+        ]);
     }
 
     public function actionLogin()
@@ -115,5 +169,9 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
 }

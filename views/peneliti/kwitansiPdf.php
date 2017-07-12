@@ -16,7 +16,7 @@
 			</td>
 			<td vAlign="bottom" width=3%>:</td>
 			<td vAlign="bottom" width=60%>
-				ASDAF
+				<?= $kwitansi->no_kwitansi ?>
 			</td>
 		</tr>
 		<tr>
@@ -25,7 +25,7 @@
 			</td>
 			<td width=3%>:</td>
 			<td width=60%>
-				
+				<?= $model->nama_lengkap ?>
 			</td>
 		</tr>
 		<tr>
@@ -34,7 +34,7 @@
 			</td>
 			<td vAlign="top" width=3%>:</td>
 			<td style="border: 1;" vAlign="top" align=center height=50 width=60%>
-				#&nbsp;<?= NULL ?>&nbsp;ribu rupiah # 
+				#&nbsp;<?= $kwitansi->terbilang ?>&nbsp; rupiah # 
 			</td>
 		</tr>
 		<tr>
@@ -44,6 +44,14 @@
 			<td vAlign="top" width=3%>:</td>
 			<td vAlign="top" height=50 width=60%>
 				Analisis&nbsp;
+				<?php
+					$sampelInvoice = \app\models\SampelInvoice::find()->where(['id_peneliti'=>$model->id])->asArray()->all();
+					$invoiceUnique = \app\controllers\AnalysisRequestController::unique_multidim_array($sampelInvoice, 'analisis');
+					foreach ($invoiceUnique as $idx => $invoiceItem) {
+					  	if($idx!==0) echo ', ';
+					  	echo $invoiceItem['analisis'];
+					}  echo '.';
+				?>
 			</td>
 		</tr>		
 	</table>
@@ -64,7 +72,7 @@
 		</tr>
 		<tr>
 			<td style="border: 1;" align=center>
-				<b>Rp <?= \Yii::$app->formatter->format($int, ['decimal',0]); ?>, -</b>
+				<b>Rp <?= \Yii::$app->formatter->format($kwitansi->jumlah_biaya, ['decimal',0]); ?>, -</b>
 			</td>			
 			<td>
 				

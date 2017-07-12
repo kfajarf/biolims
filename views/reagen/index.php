@@ -11,6 +11,8 @@ use app\models\Reagen;
 use app\models\ChemStorage;
 use kartik\export\ExportMenu;
 use kartik\mpdf\Pdf;
+use yii\helpers\Url;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ReagenSearch */
@@ -21,6 +23,7 @@ var_dump($test);die();*/
 
 $this->title = 'Reagen';
 $this->params['breadcrumbs'][] = $this->title;
+$id =1;
 ?>
 <div class="reagen-index">
 
@@ -39,33 +42,54 @@ $this->params['breadcrumbs'][] = $this->title;
         ]); ?> -->
     </p>
 
-    <?php
-        $gridColumns = [
-            'id',
-            'nama_reagen',
-            'jenis_reagen',
-            'jumlah',
-            'unit',
-            'tanggal_kadaluarsa',
-            'lokasi.lokasi_penyimpanan',
-            'lokasi.rak',
-            'supplier.supplier',
-            'status',
-        ];
-
-        echo ExportMenu::widget([
-            'dataProvider' => $dataProvider,
-            'columns' => $gridColumns,
-            'exportConfig' =>[
-                ExportMenu::FORMAT_PDF => FALSE,
-                ExportMenu::FORMAT_CSV => FALSE,
-                ExportMenu::FORMAT_HTML => FALSE,
-                ExportMenu::FORMAT_TEXT => FALSE,
-                ExportMenu::FORMAT_EXCEL => FALSE,
-                // ExportMenu::FORMAT_EXCEL_X => FALSE,
-            ],
+    <?php 
+        Modal::begin([
+            'header' => '<h4>Ambil Reagen</h4>',
+            'id' => 'modal',
+            'size' => 'modal-sm',
         ]);
-    ?>
+
+        echo "<div id='modalContent'></div>";
+        Modal::end();
+     ?>
+
+    
+    <div class="row" style="padding-left: 15px;padding-right: 15px">
+        <div class="col-sm-6" style="padding-left: 0px;padding-right: 10px">
+            <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 0px">
+            <?php
+                $gridColumns = [
+                    'id',
+                    'nama_reagen',
+                    'jenis_reagen',
+                    'jumlah',
+                    'unit',
+                    'tanggal_kadaluarsa',
+                    'lokasi.lokasi_penyimpanan',
+                    'lokasi.rak',
+                    'supplier.supplier',
+                    'status',
+                ];
+
+                echo ExportMenu::widget([
+                    'dataProvider' => $dataProvider,
+                    'columns' => $gridColumns,
+                    'exportConfig' =>[
+                        ExportMenu::FORMAT_PDF => FALSE,
+                        ExportMenu::FORMAT_CSV => FALSE,
+                        ExportMenu::FORMAT_HTML => FALSE,
+                        ExportMenu::FORMAT_TEXT => FALSE,
+                        ExportMenu::FORMAT_EXCEL => FALSE,
+                        // ExportMenu::FORMAT_EXCEL_X => FALSE,
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-sm-8" style="background-color: white; padding-top: 7px; padding-bottom: 7px">
+                <font size=2>Unduh Data Penyimpanan Reagen</font>
+            </div>
+        </div>
+    </div>
 
     <div class= "row" style="padding: 15px">
     <div style="border-top: 7px solid rgba(0, 100, 170, 1); overflow-x: auto; white-space: nowrap; background-color: white; padding: 10px 10px 0px 10px">
@@ -123,6 +147,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {delete}',
             ],
+            /*[
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{takeReagen} {view} {delete}',
+                'buttons' => [
+                    'takeReagen' => function($url, $reagen){
+                        $url = Url::to(['/chem-storage/take-reagen?id='.($reagen->id)]);
+                        return Html::a('<span class="fa fa-flask"></span>', $url, [
+                            'id' => "modalButton",
+                            'title' => 'Ambil Reagen',
+                        ]);
+                    },
+                ],
+            ],*/
             [
                 'attribute' => 'status',
                 'value' => function($reagen)

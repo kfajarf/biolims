@@ -256,9 +256,12 @@
 		<td>
 			<P CLASS="western" STYLE="margin-bottom: 0in; line-height: 150%">
 				<FONT FACE="Tahoma, serif">	<FONT SIZE=2 STYLE="font-size: 12pt">&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;
-				<?php $idx = 0;
-					foreach ($sampel as $sampelItem) {
-						echo $sampelItem['jenis'];
+				<?php 
+
+					$idx = 0;
+					$sampelUnique = \app\controllers\AnalysisRequestController::unique_multidim_array($sampel, 'metode');
+					foreach ($sampelUnique as $sampelItem) {
+						echo $sampelItem['metode'];
 						echo ($idx == (count($sampel) - 1) ? "." : ", ");
 						$idx++;
 					}	

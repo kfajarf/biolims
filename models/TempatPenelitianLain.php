@@ -29,8 +29,9 @@ class TempatPenelitianLain extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama_tempat', 'id_peneliti'], 'required'],
+            [['nama_tempat'], 'required'],
             [['id_peneliti'], 'integer'],
+            [['id_peneliti'], 'safe'],
             [['nama_tempat'], 'string', 'max' => 100],
             [['id_peneliti'], 'exist', 'skipOnError' => true, 'targetClass' => Peneliti::className(), 'targetAttribute' => ['id_peneliti' => 'id']],
         ];

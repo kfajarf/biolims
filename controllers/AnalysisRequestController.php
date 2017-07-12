@@ -375,7 +375,7 @@ class AnalysisRequestController extends Controller
     // get your HTML raw content without any layouts or scripts
         $model = $this->findModel($id);
         $lpsbId = $model->id;
-        $sampel = $this->findSampel($lpsbId);
+        $sampel = $this->findSampel($model->lpsb_order_no);
         $pemohon = $this->findPemohon($lpsbId);
         $content = $this->renderPartial('tandaTerimaSampel', [
             'model' => $model,
@@ -538,7 +538,7 @@ class AnalysisRequestController extends Controller
 
     public function findSampel($lpsbId)
     {
-        if (($model = ViewSampel::find()->where(['=', 'request_id', $lpsbId])->asArray()->all()) !== null) {
+        if (($model = DataJasaLayanan::find()->where(['=', 'lpsb_order_no', $lpsbId])->asArray()->all()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Sampel does not exist.');
@@ -566,4 +566,19 @@ class AnalysisRequestController extends Controller
     public function checkPrivilege() {
         if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
+
+    public function unique_multidim_array($array, $key) { 
+        $temp_array = array(); 
+        $i = 0; 
+        $key_array = array(); 
+        
+        foreach($array as $val) { 
+            if (!in_array($val[$key], $key_array)) { 
+                $key_array[$i] = $val[$key]; 
+                $temp_array[$i] = $val; 
+            } 
+            $i++; 
+        } 
+        return $temp_array; 
+    } 
 }

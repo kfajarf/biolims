@@ -4,10 +4,20 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Peneliti;
+use app\models\Invoice;
+use app\models\Kwitansi;
+use app\models\SampelInvoice;
 use app\models\PenelitiSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use app\models\Model;
+use app\models\TempatPenelitianLain;
+use app\models\PembimbingPenelitian;
+use app\models\RekapitulasiBahan;
+use app\models\RekapitulasiBahanSearch;
+use kartik\mPDF\Pdf;
 
 /**
  * PenelitiController implements the CRUD actions for Peneliti model.
@@ -35,6 +45,7 @@ class PenelitiController extends Controller
      */
     public function actionIndex()
     {
+        $this->checkPrivilege();
         $searchModel = new PenelitiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -51,8 +62,18 @@ class PenelitiController extends Controller
      */
     public function actionView($id)
     {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $searchModel = new RekapitulasiBahanSearch();
+        $dataProvider = $searchModel->search(ArrayHelper::merge(
+                \Yii::$app->request->queryParams,
+                [$searchModel->formName() => ['id_peneliti' => $model->id]]
+            )
+        );
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -63,13 +84,71 @@ class PenelitiController extends Controller
      */
     public function actionCreate()
     {
+        $this->checkPrivilege();
         $model = new Peneliti();
+        $modelsPembimbing = [new PembimbingPenelitian];
+        $modelsTempat = [new TempatPenelitianLain];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) 
+        {
+            $modelsPembimbing = Model::createMultiple(PembimbingPenelitian::classname());
+            Model::loadMultiple($modelsPembimbing, Yii::$app->request->post());
+            // validate all models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsPembimbing) && $valid;
+
+            // var_dump($valid);die();
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $model->save(false)) {
+                        foreach ($modelsPembimbing as $modelPembimbing) {
+                            $modelPembimbing->id_peneliti = $model->id;
+                            if (! ($flag = $modelPembimbing->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        ////////post modelsTempat/////////
+
+                        $modelsTempat = Model::createMultiple(TempatPenelitianLain::classname());
+                        Model::loadMultiple($modelsTempat, Yii::$app->request->post());
+                        // validate all models
+                        $valid = $model->validate();
+                        $valid = Model::validateMultiple($modelsTempat) && $valid;
+                        if ($valid) {
+                            $transaction = \Yii::$app->db->beginTransaction();
+                            try {
+                                if ($flag = $model->save(false)) {
+                                    foreach ($modelsTempat as $modelTempat) {
+                                        $modelTempat->id_peneliti = $model->id;
+                                        if (! ($flag = $modelTempat->save(false))) {
+                                            $transaction->rollBack();
+                                            break;
+                                        }
+                                    }
+                                }
+                                if ($flag) {
+                                    $transaction->commit();
+                                    return $this->redirect(['index']);
+                                }
+                            } catch (Exception $e) {
+                                $transaction->rollBack();
+                            }
+                        }
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'modelsPembimbing' => (empty($modelsPembimbing)) ? [new PembimbingPenelitian] : $modelsPembimbing,
+                'modelsTempat' => (empty($modelsTempat)) ? [new TempatPenelitianLain] : $modelsTempat,
             ]);
         }
     }
@@ -82,15 +161,85 @@ class PenelitiController extends Controller
      */
     public function actionUpdate($id)
     {
+        $this->checkPrivilege();
         $model = $this->findModel($id);
+        $modelsPembimbing = $model->pembimbingPenelitian;
+        $modelsTempat = $model->tempatPenelitianLain;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            $oldIDs = ArrayHelper::map($modelsPembimbing, 'id', 'id');
+            $modelsPembimbing = Model::createMultiple(PembimbingPenelitian::classname(), $modelsPembimbing);
+            Model::loadMultiple($modelsPembimbing, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsPembimbing, 'id', 'id')));
+
+            // validate all models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsPembimbing) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $model->save(false)) {
+                        if (!empty($deletedIDs)) {
+                            PembimbingPenelitian::deleteAll(['id' => $deletedIDs]);
+                        }
+                        foreach ($modelsPembimbing as $modelPembimbing) {
+                            $modelPembimbing->id_peneliti = $model->id;
+                            if (! ($flag = $modelPembimbing->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        ///Post Data Tempat
+                        $oldIDs = ArrayHelper::map($modelsTempat, 'id', 'id');
+                        $modelsTempat = Model::createMultiple(TempatPenelitianLain::classname(), $modelsTempat);
+                        Model::loadMultiple($modelsTempat, Yii::$app->request->post());
+                        $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsTempat, 'id', 'id')));
+
+                        // validate all models
+                        $valid = $model->validate();
+                        $valid = Model::validateMultiple($modelsTempat) && $valid;
+
+                        if ($valid) {
+                            $transaction = \Yii::$app->db->beginTransaction();
+                            try {
+                                if ($flag = $model->save(false)) {
+                                    if (!empty($deletedIDs)) {
+                                        TempatPenelitianLain::deleteAll(['id' => $deletedIDs]);
+                                    }
+                                    foreach ($modelsTempat as $modelTempat) {
+                                        $modelTempat->id_peneliti = $model->id;
+                                        if (! ($flag = $modelTempat->save(false))) {
+                                            $transaction->rollBack();
+                                            break;
+                                        }
+                                    }
+                                }
+                                if ($flag) {
+                                    $transaction->commit();
+                                    return $this->redirect(['view', 'id' => $model->id]);
+                                }
+                            } catch (Exception $e) {
+                                $transaction->rollBack();
+                            }
+                        }
+
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
         }
+
+        return $this->render('update', [
+            'model' => $model,
+            'modelsPembimbing' => (empty($modelsPembimbing)) ? [new PembimbingPenelitian] : $modelsPembimbing,
+            'modelsTempat' => (empty($modelsTempat)) ? [new TempatPenelitianLain] : $modelsTempat,
+        ]);
     }
 
     /**
@@ -101,6 +250,7 @@ class PenelitiController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->checkPrivilege();
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -113,6 +263,340 @@ class PenelitiController extends Controller
      * @return Peneliti the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
+    
+    public function actionCreateRekapitulasiBahan($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $modelsBahan = [new RekapitulasiBahan];
+
+        if ($model->load(Yii::$app->request->post())) 
+        {
+            $modelsBahan = Model::createMultiple(RekapitulasiBahan::classname());
+            Model::loadMultiple($modelsBahan, Yii::$app->request->post());
+            // validate all models
+            $model->save();
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsBahan) && $valid;
+
+            // var_dump($valid);die();
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $model->save(false)) {
+                        foreach ($modelsBahan as $modelBahan) {
+                            $modelBahan->id_peneliti = $model->id;
+                            if (! ($flag = $modelBahan->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+        } else {
+            return $this->render('createRekapitulasiBahan', [
+                'model' => $model,
+                'modelsBahan' => (empty($modelsBahan)) ? [new RekapitulasiBahan] : $modelsBahan,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Peneliti model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdateRekapitulasiBahan($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $modelsBahan = $model->rekapitulasiBahan;
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $oldIDs = ArrayHelper::map($modelsBahan, 'id', 'id');
+            $modelsBahan = Model::createMultiple(RekapitulasiBahan::classname(), $modelsBahan);
+            Model::loadMultiple($modelsBahan, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsBahan, 'id', 'id')));
+            $model->save();
+            // validate all models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsBahan) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $model->save(false)) {
+                        if (!empty($deletedIDs)) {
+                            RekapitulasiBahan::deleteAll(['id' => $deletedIDs]);
+                        }
+                        foreach ($modelsBahan as $modelBahan) {
+                            $modelBahan->id_peneliti = $model->id;
+                            if (! ($flag = $modelBahan->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+        }
+
+        return $this->render('updateRekapitulasiBahan', [
+            'model' => $model,
+            'modelsBahan' => (empty($modelsBahan)) ? [new RekapitulasiBahan] : $modelsBahan,
+        ]);
+    }
+    
+
+    
+    public function actionCreateInvoice($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $invoice = new Invoice;
+        $modelsSampelInvoice = [new SampelInvoice];
+
+        if ($invoice->load(Yii::$app->request->post())) 
+        {
+            $modelsSampelInvoice = Model::createMultiple(SampelInvoice::classname());
+            Model::loadMultiple($modelsSampelInvoice, Yii::$app->request->post());
+            // validate all models
+            $invoice->id_peneliti = $model->id;
+            $invoice->no_invoice .= '/I3.11.8/LPSB-INV/2017';
+            $invoice->save();
+            $valid = $invoice->validate();
+            $valid = Model::validateMultiple($modelsSampelInvoice) && $valid;
+
+            // var_dump($valid);die();
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $invoice->save(false)) {
+                        foreach ($modelsSampelInvoice as $modelSampelInvoice) {
+                            $modelSampelInvoice->id_peneliti = $model->id;
+                            if (! ($flag = $modelSampelInvoice->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+        } else {
+            return $this->render('createInvoice', [
+                'model' => $model,
+                'invoice' => $invoice,
+                'modelsSampelInvoice' => (empty($modelsSampelInvoice)) ? [new SampelInvoice] : $modelsSampelInvoice,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Peneliti model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdateInvoice($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
+        $modelsSampelInvoice = $model->sampelInvoice;
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $oldIDs = ArrayHelper::map($modelsSampelInvoice, 'id', 'id');
+            $modelsSampelInvoice = Model::createMultiple(SampelInvoice::classname(), $modelsSampelInvoice);
+            Model::loadMultiple($modelsSampelInvoice, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSampelInvoice, 'id', 'id')));
+            $invoice->save();
+            // validate all models
+            $valid = $invoice->validate();
+            $valid = Model::validateMultiple($modelsSampelInvoice) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $invoice->save(false)) {
+                        if (!empty($deletedIDs)) {
+                            SampelInvoice::deleteAll(['id' => $deletedIDs]);
+                        }
+                        foreach ($modelsSampelInvoice as $modelSampelInvoice) {
+                            $modelSampelInvoice->id_peneliti = $model->id;
+                            if (! ($flag = $modelSampelInvoice->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+        }
+
+        return $this->render('updateInvoice', [
+            'model' => $model,
+            'invoice' => $invoice,
+            'modelsSampelInvoice' => (empty($modelsSampelInvoice)) ? [new SampelInvoice] : $modelsSampelInvoice,
+        ]);
+    }
+
+    public function actionInvoicePdf($id) {
+    // get your HTML raw content without any layouts or scripts
+        $model = $this->findModel($id);
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
+        $sampelInvoice = SampelInvoice::findAll(['id_peneliti' => $model->id]);
+        $content = $this->renderPartial('invoicePdf', [
+            'model' => $model,
+            'invoice' => $invoice,
+            'sampelInvoice' => $sampelInvoice,
+        ]);
+     
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:12px}', 
+             // set mPDF properties on the fly
+            'options' => ['shrink_tables_to_fit' => 0],
+
+            'filename' => $invoice->no_invoice,
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>null, 
+                'SetFooter'=>null,
+            ]   
+        ]);
+ 
+    // return the pdf output as per the destination setting
+        return $pdf->render();
+    } 
+
+    public function actionCreateKwitansi($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $kwitansi = new Kwitansi();
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
+
+        if ($kwitansi->load(Yii::$app->request->post())) {
+            $kwitansi->no_kwitansi .= '/I3.11.8/KW/2017';
+            $kwitansi->telah_terima_dari = $model->nama_lengkap;
+            $kwitansi->jumlah_biaya = $invoice->total_biaya;
+            $kwitansi->terbilang = $invoice->terbilang;
+            $kwitansi->id_peneliti = $model->id;
+            $kwitansi->save();
+            // var_dump($kwitansi->validate());die;
+            return $this->redirect(['view', 'id'=> $model->id]);
+        } else {
+            return $this->renderAjax('createKwitansi', [
+                'model' => $model,
+                'kwitansi' => $kwitansi,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Supplier model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdateKwitansi($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $kwitansi = Kwitansi::findOne(['id_peneliti' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('updateKwitansi', [
+                'model' => $model,
+                'kwitansi' => $kwitansi,
+            ]);
+        }
+    }
+
+    public function actionKwitansiPdf($id) {
+    // get your HTML raw content without any layouts or scripts
+        $model = $this->findModel($id);
+        $kwitansi = Kwitansi::findOne(['id_peneliti' => $model->id]);
+        $content = $this->renderPartial('kwitansiPdf', [
+            'model' => $model,
+            'kwitansi' => $kwitansi,
+        ]);
+     
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:12px}', 
+             // set mPDF properties on the fly
+            'options' => ['shrink_tables_to_fit' => 0],
+
+            'filename' => $kwitansi->no_kwitansi,
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>null, 
+                'SetFooter'=>null,
+            ]   
+        ]);
+ 
+    // return the pdf output as per the destination setting
+        return $pdf->render();
+    } 
+
     protected function findModel($id)
     {
         if (($model = Peneliti::findOne($id)) !== null) {
@@ -120,5 +604,9 @@ class PenelitiController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function checkPrivilege() {
+        if (Yii::$app->user->isGuest) throw new \yii\web\HttpException(403, 'You don\'t have permission to access this page.');
     }
 }

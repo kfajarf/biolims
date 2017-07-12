@@ -32,9 +32,10 @@ class Kwitansi extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['no_kwitansi', 'telah_terima_dari', 'untuk_pembayaran_analisis', 'terbilang', 'jumlah_biaya', 'tanggal_kwitansi', 'id_peneliti'], 'required'],
+            [['no_kwitansi', 'telah_terima_dari', 'terbilang', 'jumlah_biaya', 'tanggal_kwitansi'], 'required'],
             [['jumlah_biaya', 'id_peneliti'], 'integer'],
-            [['tanggal_kwitansi'], 'safe'],
+            [['untuk_pembayaran_analisis'], 'default', 'value' => NULL],
+            [['tanggal_kwitansi','id_peneliti', 'untuk_pembayaran_analisis'], 'safe'],
             [['no_kwitansi', 'telah_terima_dari', 'untuk_pembayaran_analisis', 'terbilang'], 'string', 'max' => 100],
         ];
     }

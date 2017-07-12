@@ -72,41 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'tanggal_mulai',
             [
                 'attribute' => 'kalibrasi_selanjutnya',
-                'value' => function($model)
-                {
-                    $today = date('Y-m-d');
-                    if($today > $model->kalibrasi_selanjutnya)
-                    {
-                        LabKitController::resetSchedule($model->id); 
-                    }
-                    return $model->kalibrasi_selanjutnya;
-                }
-            ],
-            [
-                'attribute' => 'status_penggunaan',
-                'value' => function($model)
-                {
-                    LabKitController::checkStatus($model->id);
-                    return $model->status_penggunaan;
-                }
-            ],
-            [
-                'attribute' => 'Penggunaan Selanjutnya',
-                'value' => function($model)
-                {
-                    $today = date('Y-m-d');
-                    $pengguna = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->id])->andWhere(['>', 'tanggal_penggunaan', $today])->orderBy(['tanggal_penggunaan' => SORT_ASC])->one();
-                    if($pengguna != null)
-                    {
-                        if($pengguna->tanggal_penggunaan > $today)
-                            return $pengguna->tanggal_penggunaan;
-                        else return '-';
-                    }
-                    else return '-';                    
-                }
-            ],
-            [
-                'attribute' => 'keterangan',
+                'format' => 'raw',
                 'value' => function($model)
                 {
                     $today = date('Y-m-d');
@@ -117,10 +83,77 @@ $this->params['breadcrumbs'][] = $this->title;
                     // } else if ($flagStock || $flagExpired){
                         return "Peringatan Kalibrasi Alat";
                     } else {
+                        return date('d-m-Y', strtotime($model->kalibrasi_selanjutnya));
+                    }
+                }
+            ],
+            [
+                'attribute' => '',
+                'format' => 'raw',
+                'value' => function($model)
+                {
+                    $today = date('Y-m-d');
+                    // var_dump($today);die();
+                    if($model->status_kalibrasi == 'belum dikalibrasi'){
+                            return Html::a('Kalibrasi Alat',['reset-schedule', 'id' => $model->id], ['class' => 'btn btn-primary']);
+                    } else {
                         return '-';
                     }
                 }
             ],
+            /*[
+                'attribute' => 'kalibrasi_selanjutnya',
+                'value' => function($model)
+                {
+                    $today = date('Y-m-d');
+                    if($today > $model->kalibrasi_selanjutnya)
+                    {
+                        LabKitController::resetSchedule($model->id); 
+                    }
+                    return $model->kalibrasi_selanjutnya;
+                }
+            ],
+            */
+            [
+                'attribute' => 'status_penggunaan',
+            ],
+            [
+                'attribute' => '',
+                'format'=>'raw',
+                'value' => function($model)
+                {
+                    $today = date('Y-m-d');
+                    // var_dump($today);die();
+                    $pengguna = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->id, 'status_pengembalian_alat' => 'belum dikembalikan'])->andWhere(['=', 'tanggal_penggunaan', $today])->orderBy(['tanggal_penggunaan' => SORT_ASC])->one();
+                    if($pengguna != NULL){    
+                        if(($today == $pengguna->tanggal_penggunaan) && ($pengguna->status_pengembalian_alat == 'belum dikembalikan'))
+                        {
+                            \app\controllers\LabKitController::setStatusPenggunaan($model->id);
+                        }
+                        if($model->status_penggunaan == 'digunakan'){
+                            return Html::a('Pengembalian Alat',['pengembalian-alat', 'id' => $pengguna->id], ['class' => 'btn btn-primary']); 
+                        }
+                        else return '-';
+                    }
+                    else return '-';
+                }
+            ],
+            [
+                'attribute' => 'Penggunaan Selanjutnya',
+                'value' => function($model)
+                {
+                    $today = date('Y-m-d');
+                    $pengguna = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->id, 'status_pengembalian_alat' => 'belum dikembalikan'])->andWhere(['>', 'tanggal_penggunaan', $today])->orderBy(['tanggal_penggunaan' => SORT_ASC])->one();
+                    if($pengguna != null)
+                    {
+                        if($pengguna->tanggal_penggunaan > $today)
+                            return $pengguna->tanggal_penggunaan;
+                        else return '-';
+                    }
+                    else return '-';                    
+                }
+            ],
+            
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
