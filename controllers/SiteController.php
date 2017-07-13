@@ -110,12 +110,17 @@ class SiteController extends Controller
         $dpFrekuensiDepartemen = $smFrekuensiDepartemen->search(Yii::$app->request->queryParams);
         $smFrekuensiFakultas = new \app\models\FrekuensiFakultasSearch();
         $dpFrekuensiFakultas = $smFrekuensiFakultas->search(Yii::$app->request->queryParams);
+        $smInfoDepartemenPeneliti = new \app\models\InfoDepartemenPenelitiSearch();
+        $dpInfoDepartemenPeneliti = $smInfoDepartemenPeneliti->search(Yii::$app->request->queryParams);
+
 
         return $this->render('departemenPeneliti', [
             'smFrekuensiDepartemen' => $smFrekuensiDepartemen,
             'dpFrekuensiDepartemen' => $dpFrekuensiDepartemen,
             'smFrekuensiFakultas' => $smFrekuensiFakultas,
             'dpFrekuensiFakultas' => $dpFrekuensiFakultas,
+            'smInfoDepartemenPeneliti' => $smInfoDepartemenPeneliti,
+            'dpInfoDepartemenPeneliti' => $dpInfoDepartemenPeneliti,
         ]);
     }
 

@@ -14,8 +14,7 @@ use Yii;
  * @property integer $personel
  * @property integer $bahan_kimia
  * @property integer $kondisi_akomodasi
- * @property string $kesimpulan
- * @property integer $request_id
+ * @property strin * @property integer $request_id
  *
  * @property AnalysisRequest $request
  */
@@ -37,8 +36,8 @@ class KajiUlang extends \yii\db\ActiveRecord
         return [
             [['metode', 'peralatan', 'personel', 'bahan_kimia', 'kondisi_akomodasi', 'request_id'], 'integer'],
             [['parameter', 'metode', 'peralatan', 'personel', 'bahan_kimia', 'kondisi_akomodasi'], 'required'],
-            [['request_id', 'kesimpulan'], 'safe'],
-            [['parameter', 'kesimpulan'], 'string', 'max' => 100],
+            [['request_id'], 'safe'],
+            [['parameter'], 'string', 'max' => 100],
             [['request_id'], 'exist', 'skipOnError' => true, 'targetClass' => AnalysisRequest::className(), 'targetAttribute' => ['request_id' => 'id']],
         ];
     }
@@ -56,7 +55,6 @@ class KajiUlang extends \yii\db\ActiveRecord
             'personel' => 'Personel',
             'bahan_kimia' => 'Bahan Kimia',
             'kondisi_akomodasi' => 'Kondisi Akomodasi',
-            'kesimpulan' => 'Kesimpulan',
             'request_id' => 'Request ID',
         ];
     }

@@ -55,10 +55,10 @@ $this->params['breadcrumbs'][] = $this->title;
             $flag = LabKitController::checkDate($model->id);
             $today = date('Y-m-d');
             $usedFlag = $model->status_penggunaan;
-            if($usedFlag == "digunakan" && $model->kalibrasi_selanjutnya == $today)
+            if($usedFlag == "digunakan" && $model->status_kalibrasi == 'belum dikalibrasi')
             {
                 return ['class' => 'danger'];
-            } else if ($usedFlag == "digunakan" || $model->kalibrasi_selanjutnya == $today){
+            } else if ($usedFlag == "digunakan" || $model->status_kalibrasi == 'belum dikalibrasi'){
                 return ['class' => 'warning'];
             }
             else return ['class' => 'success'];
@@ -147,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if($pengguna != null)
                     {
                         if($pengguna->tanggal_penggunaan > $today)
-                            return $pengguna->tanggal_penggunaan;
+                            return date('d-m-Y', strtotime($pengguna->tanggal_penggunaan));
                         else return '-';
                     }
                     else return '-';                    

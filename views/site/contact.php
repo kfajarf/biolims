@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php else: ?>
 
         <p>
-            Jika ada bug/problem pada aplikasih, silahkan isi form berikut.
+            Jika ada bug/problem pada aplikasi, silahkan isi form berikut.
         </p>
 
         <div class="row" style="padding: 15px">

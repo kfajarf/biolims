@@ -27,20 +27,79 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
-                    'id',
-                    'nama_lengkap',
-                    'tempat_tanggal_lahir',
-                    'institusi',
-                    'departemen_id',
-                    'nrp_nim',
+                [
+                    'attribute' => 'id',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'nama_lengkap',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'tempat_tanggal_lahir',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'institusi',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'departemen_id',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'nrp_nim',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
                     // 'no_handphone',
                     // 'email:email',
                     // 'alamat_dan_no_telp_bogor',
                     // 'alamat_dan_no_telp_orang_tua',
-                    'judul_penelitian',
-                    'tanggal_masuk_lpsb',
+                [
+                    'attribute' => 'judul_penelitian',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'tanggal_masuk_lpsb',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ],
+                    'value' => function($model)
+                    {
+                        return date('d-m-Y', strtotime($model->tanggal_masuk_lpsb));
+                    }
+                ],
+
                     // 'uang_masuk_lpsb',
-                    'deposit_lpsb',
+                [
+                    'attribute' => 'deposit_lpsb',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
                     // 'keterangan',
                     // 'biaya_hasil_rekapitulasi',
 

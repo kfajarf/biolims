@@ -140,8 +140,9 @@ class LabKitController extends Controller
         if ($pengguna->load(Yii::$app->request->post())) {
             $isAlreadyBorrowed = \app\models\PenggunaanAlat::find()->where(['kit_id' => $pengguna->kit_id, 'tanggal_penggunaan' => $pengguna->tanggal_penggunaan, 'status_pengembalian_alat' => 'belum dikembalikan'])->all();
             if(count($isAlreadyBorrowed) > 0) {
-                throw new ForbiddenHttpException('Alat sudah dibooking pada tanggal tersebut');
-                // var_dump(count($isAlreadyBorrowed));die();
+                // throw new ForbiddenHttpException('Alat sudah dibooking pada tanggal tersebut');
+                Yii::$app->session->setFlash('gagalPinjam');
+                return $this->redirect('/penggunaan-alat/index');
             }
             else $pengguna->save();
             return $this->redirect(['//penggunaan-alat/index']);

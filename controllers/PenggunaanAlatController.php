@@ -67,12 +67,13 @@ class PenggunaanAlatController extends Controller
     {
         $this->checkPrivilege();
         $model = new PenggunaanAlat();
-
         if ($model->load(Yii::$app->request->post())) {
             $isAlreadyBorrowed = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->kit_id, 'tanggal_penggunaan' => $model->tanggal_penggunaan])->all();
             var_dump(count($isAlreadyBorrowed));die();
-            if(count($isAlreadyBorrowed) > 1) throw new NotFoundHttpException('Alat sudah dibooking pada tanggal tersebut');
-            else $model->save();
+            if(count($isAlreadyBorrowed) > 1) {
+                Yii::$app->session->setFlash('gagalPinjam');
+                return $this->refresh();
+            }else $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [

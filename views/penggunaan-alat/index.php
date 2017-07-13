@@ -27,6 +27,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- <h1><?= Html::encode($this->title) ?></h1> -->
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <?php if (Yii::$app->session->hasFlash('gagalPinjam')): ?>
+
+        <div class="alert alert-danger">
+            Alat sudah dibooking terlebih dahulu pada tanggal tersebut. Silahkan pilih tanggal yang lain. 
+        </div>
+
+    <?php endif; ?>
+
     <p>
         <!-- <?= Html::a('Pinjam Alat', ['peminjaman'], ['class' => 'btn btn-success']) ?> -->
         <?= Html::a('Alat Laboratorium', ['//lab-kit'], ['class' => 'btn btn-default']) ?>
@@ -85,14 +93,36 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            'nama_pengguna',
-            'nim',
+            [
+                'attribute' => 'nama_pengguna',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'nim',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
             [
                 'attribute' => 'kit_id',
                 'value' => 'kit.nama_alat',
                 'filter' => Html::activeDropDownList($searchModel, 'kit_id', ArrayHelper::map(LabKit::find()->asArray()->all(), 'id', 'nama_alat'), ['class' => 'form-control', 'prompt' => '-- Lab Kit --']),
             ],
-            'tanggal_penggunaan',
+            [
+                'attribute' => 'tanggal_penggunaan',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ],
+                'value' => function($model)
+                {
+                    return date('d-m-Y', strtotime($model->tanggal_penggunaan));
+                }
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{deleteLog}',

@@ -6,6 +6,9 @@ use app\models\Lokasi;
 use app\controllers\ChemStorageController;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+use yii\grid\GridView;
+use kartik\export\ExportMenu;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Reagen */
@@ -83,5 +86,87 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
     </div>
+
+    <div class="row" style="padding-left: 15px;padding-right: 15px">
+        <div class="col-sm-10" style="padding-left: 0px;padding-right: 0px">
+            <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 0px">
+            <?php
+                $gridColumns = [
+                    'id_reagen',
+                    'nama_reagen',
+                    'jumlah',
+                    'unit',
+                    'tanggal_pengambilan',
+                ];
+
+                echo ExportMenu::widget([
+                    'dataProvider' => $dataProvider,
+                    'columns' => $gridColumns,
+                    'exportConfig' => [
+                        ExportMenu::FORMAT_TEXT => FALSE,
+                        ExportMenu::FORMAT_PDF => FALSE,
+                        ExportMenu::FORMAT_EXCEL => FALSE,
+                        ExportMenu::FORMAT_CSV => FALSE,
+                        ExportMenu::FORMAT_HTML => FALSE,
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-sm-8" style="background-color: white; padding-top: 7px; padding-bottom: 7px">
+                <font size=2>Unduh Data Log Pengambilan Bahan</font>
+            </div>
+        </div>
+    </div>
+
+    <?php Pjax::begin(); ?>
+    <div class= "row" style="padding: 15px">
+        <div class="col-md-10" style="padding-left: 0px;padding-right: 0px">
+            <div class="line">
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
+                [
+                    'attribute' => 'id_reagen',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' => 'nama_reagen',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+                [
+                    'attribute' =>'jumlah',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ],
+                ],
+                [
+                    'attribute' =>'unit',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ],
+                ],
+                [
+                    'attribute' => 'tanggal_pengambilan',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
+            ],
+        ]); ?>
+            </div>
+        </div>
+    </div>
+    <?php Pjax::end(); ?>
 
 </div>

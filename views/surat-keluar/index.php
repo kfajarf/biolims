@@ -30,7 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     // 'id',
                     'nomor_surat',
-                    'tanggal_surat',
+                    [
+                        'attribute' => 'tanggal_surat',
+                        'value' => function($model)
+                        {
+                            return date('d-m-Y', strtotime($model->tanggal_surat));
+                        }
+                    ],
                     'pembuat',
                     'tujuan_surat',
                     'perihal',

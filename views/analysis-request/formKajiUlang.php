@@ -62,9 +62,9 @@ use yii\helpers\ArrayHelper;
                             <div class="col-md-6">
                                 <?= $form->field($kajiUlangItem, "[{$i}]parameter")->textInput(['maxlength' => true]) ?>
                             </div>
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <?= $form->field($kajiUlangItem, "[{$i}]kesimpulan")->textarea(['rows' => 1]) ?>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="row">
                             <div class="col-sm-2">
@@ -76,7 +76,7 @@ use yii\helpers\ArrayHelper;
                             <div class="col-sm-2">
                                 <?= $form->field($kajiUlangItem, "[{$i}]personel")->dropDownList([1 => 'Bisa', 0 => 'Tidak Bisa']) ?>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <?= $form->field($kajiUlangItem, "[{$i}]bahan_kimia")->dropDownList([1 => 'Bisa', 0 => 'Tidak Bisa']) ?>
                             </div>
                             <div class="col-sm-3">

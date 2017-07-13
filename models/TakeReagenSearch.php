@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\RekapitulasiBahan;
+use app\models\TakeReagen;
 
 /**
  * AnalysisRequestDataSearch represents the model behind the search form about `app\models\AnalysisRequestData`.
  */
-class RekapitulasiBahanSearch extends RekapitulasiBahan
+class TakeReagenSearch extends TakeReagen
 {
     /**
      * @inheritdoc
@@ -19,8 +19,8 @@ class RekapitulasiBahanSearch extends RekapitulasiBahan
     public function rules()
     {
         return [
-           	[['id', 'harga', 'jumlah'], 'integer'],
-            [['nama_bahan', 'spesifikasi', 'keterangan', 'id_peneliti'], 'safe'],
+           	[['id', 'chem_storage_id', 'jumlah'], 'integer'],
+            [['id_reagen', 'nama_reagen', 'tanggal_pengambilan', 'chem_storage_id', 'unit'], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class RekapitulasiBahanSearch extends RekapitulasiBahan
      */
     public function search($params, $id)
     {
-        $query = RekapitulasiBahan::find();
+        $query = TakeReagen::find();
 
         // add conditions that should always apply here
 
@@ -60,15 +60,14 @@ class RekapitulasiBahanSearch extends RekapitulasiBahan
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             'jumlah' => $this->jumlah,
-            'harga' => $this->harga,
-            'id_peneliti' => $id,
+            'chem_storage_id' => $this->chem_storage_id,
         ]);
 
-        $query->andFilterWhere(['like', 'nama_bahan', $this->nama_bahan])
-            ->andFilterWhere(['like', 'spesifikasi', $this->spesifikasi])
-            ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
+        $query->andFilterWhere(['like', 'id_reagen', $id])
+            ->andFilterWhere(['like', 'nama_reagen', $this->nama_reagen])
+            ->andFilterWhere(['like', 'unit', $this->unit])
+            ->andFilterWhere(['like', 'tanggal_pengambilan', $this->tanggal_pengambilan]);
 
         return $dataProvider;
     }

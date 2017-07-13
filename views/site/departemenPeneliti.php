@@ -175,8 +175,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $smFrekuensiFakultas,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'nama_fakultas',
-            'jumlah',
+            [
+                'attribute' =>'nama_fakultas',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' =>'jumlah',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
         ],
     ]); ?>
     </div>
@@ -188,13 +200,113 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $smFrekuensiDepartemen,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'nama_fakultas',
-            'nama_departemen',
-            'jumlah',
+            [
+                'attribute' => 'nama_fakultas',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'nama_departemen',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'jumlah',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
         ],
     ]); ?>
     </div>
         </div>
+    </div>
+    <?php Pjax::end(); ?>
+
+    <div class="row" style="padding-left: 15px;padding-right: 15px">
+        <div class="col-sm-12" style="padding-left: 0px;padding-right: 15px">
+            <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 15px">
+            <?php
+                $gridColumnsInfoDepartemenPeneliti = [
+                    'id',
+                    'nama_peneliti',
+                    'nip_nrp_nim',
+                    'nama_departemen',
+                    'nama_fakultas',
+                ];
+
+                echo ExportMenu::widget([
+                    'dataProvider' => $dpInfoDepartemenPeneliti,
+                    'columns' => $gridColumnsInfoDepartemenPeneliti,
+                    'exportConfig' => [
+                        ExportMenu::FORMAT_TEXT => FALSE,
+                        ExportMenu::FORMAT_PDF => FALSE,
+                        ExportMenu::FORMAT_EXCEL => FALSE,
+                        ExportMenu::FORMAT_CSV => FALSE,
+                        ExportMenu::FORMAT_HTML => FALSE,
+                    ],
+                ]);
+            ?>
+            </div>
+            <div class="col-sm-8" style="background-color: white; padding: 7px">
+                <font size=2>Unduh Data Frekuensi Fakultas</font>
+            </div>
+        </div>
+    </div>
+    <?php Pjax::begin(); ?>
+    <div class= "row" style="padding: 15px">
+    <div class="col-md-12" style="padding-left: 0px; padding-right: 15px;">
+        <div class="line">
+    <?= GridView::widget([
+        'dataProvider' => $dpInfoDepartemenPeneliti,
+        'filterModel' => $smInfoDepartemenPeneliti,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            [
+                'attribute' => 'id',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'nama_peneliti',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'nip_nrp_nim',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'nama_departemen',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'nama_fakultas',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            // 'akronim',
+        ],
+    ]); ?>
+        </div>
+    </div>
     </div>
     <?php Pjax::end(); ?>
 </div>

@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\ChemStorage;
 use app\models\ReagenSearch;
+use app\models\TakeReagenSearch;
 use app\models\Reagen;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -66,6 +67,8 @@ class ChemStorageController extends Controller
         $reagens = $model->reagens;
         $lokasi = $reagen->lokasi;
         $supplier = $reagen->supplier;
+        $searchModel = new TakeReagenSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
 
         return $this->render('//reagen/view', [
             'model' => $model,
@@ -73,6 +76,8 @@ class ChemStorageController extends Controller
             'reagens' => $reagens,
             'lokasi' => $lokasi,
             'supplier' => $supplier,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -162,6 +167,8 @@ class ChemStorageController extends Controller
             $takeReagen->id_reagen = $reagen->id;
             $takeReagen->nama_reagen = $reagen->nama_reagen;
             $takeReagen->tanggal_pengambilan = date('Y-m-d');
+            $takeReagen->chem_storage_id = $reagen->id_storage;
+            $takeReagen->unit = $reagen->unit;
             if($takeReagen->save()){
                 $reagen->jumlah -= $takeReagen->jumlah;
                 $reagen->save();

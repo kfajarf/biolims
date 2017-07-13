@@ -65,11 +65,8 @@ class PenelitiController extends Controller
         $this->checkPrivilege();
         $model = $this->findModel($id);
         $searchModel = new RekapitulasiBahanSearch();
-        $dataProvider = $searchModel->search(ArrayHelper::merge(
-                \Yii::$app->request->queryParams,
-                [$searchModel->formName() => ['id_peneliti' => $model->id]]
-            )
-        );
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams, $model->id);
+        // var_dump(\Yii::$app->request->queryParams);die();
         return $this->render('view', [
             'model' => $model,
             'searchModel' => $searchModel,

@@ -88,14 +88,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     name: 'Sasaran Mutu',
                     color: 'rgba(165,170,217,.3)',
                     data: [35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35],
-                    pointPadding: 0,
-                    pointPlacement: 0
+                    pointPadding: 0.15,
+                    pointPlacement: -.2
                 }, {
                     name: 'Jumlah Jasa Layanan',
                     color: 'rgba(126,86,134,1)',
                     data: [$January[jumlah], $February[jumlah], $March[jumlah], $April[jumlah], $May[jumlah], $June[jumlah], $July[jumlah], $August[jumlah], $September[jumlah], $October[jumlah], $November[jumlah], $December[jumlah]],
-                    pointPadding: 0,
-                    pointPlacement: 0
+                    pointPadding: 0.15,
+                    pointPlacement: .2
                 }]
             });
         ")?>

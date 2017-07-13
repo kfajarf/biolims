@@ -117,17 +117,49 @@ $id =1;
             [
                 'attribute' => 'id',
                 'value' => 'id',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
             ],
-            'nama_reagen',
+            [
+                'attribute' => 'nama_reagen',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
             [
                 'attribute' => 'jenis_reagen',
                 'value' => 'jenis_reagen',
                 'filter'=> array('padat' => 'Padat', 'cair' => 'Cair'),
             ],
-            'jumlah',
+            [
+                'attribute' => 'jumlah',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
             //'jumlah_minimum',
-            'unit',
-            'tanggal_kadaluarsa',
+            [
+                'attribute' => 'unit',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' => 'tanggal_kadaluarsa',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ],
+                'value' => function($model)
+                {
+                    return date('d-m-Y', strtotime($model->tanggal_kadaluarsa));
+                }
+            ],
             [
                 'attribute' => 'id_lokasi',
                 'value' => 'lokasi.lokasi_penyimpanan',
@@ -141,6 +173,10 @@ $id =1;
             [
                 'attribute' => 'pemilik',
                 'value' => 'chemStorage.pemilik',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
             ],
 
             [

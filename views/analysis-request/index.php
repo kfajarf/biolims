@@ -61,14 +61,28 @@ for ($idx=1; $idx <= 12; $idx++)
                     ]);
                 },
             ],
-            'lpsb_order_no',
+            [
+                'attribute' => 'lpsb_order_no',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
             [
                 'attribute' => 'nama_lengkap',
                 'value' => 'pemohonAnalisis.nama_lengkap',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
             ],
             [
                 'attribute' => 'institusi_perusahaan',
                 'value' => 'pemohonAnalisis.institusi_perusahaan',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
             ],
             // 'pemohon.alamat:ntext',
             // 'pemohon.telp_fax',
@@ -76,14 +90,28 @@ for ($idx=1; $idx <= 12; $idx++)
             [
                 'attribute' => 'email',
                 'value' => 'pemohonAnalisis.email',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
             ],
             [
                 'attribute' => 'status_pengujian',
                 'value' => 'status_pengujian',
-                'filter' => array('biasa' => 'Biasa', 'percepatan' => 'Percepatan')
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian',
+                ],
+                'filter' => array('biasa' => 'Biasa', 'percepatan' => 'Percepatan'),
             ],
             //'tanggal_diterima',
-            'tanggal_selesai',
+            [
+                'attribute' => 'tanggal_selesai',
+                'value' => function($model)
+                {
+                    return date('d-m-Y', strtotime($model->tanggal_selesai));
+                }
+            ],
             'total_biaya',
             //'dp',
             //'sisa',

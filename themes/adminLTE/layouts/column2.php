@@ -51,7 +51,7 @@ use yii\helpers\Url;
                           ],
                         ],
                       ],
-                      ['label' => ThemeNav::link('Kontak Admin', 'fa fa-user'), 'url' => ['/site/contact'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/site/contact']), 'visible'=>!Yii::$app->user->isGuest],
+                      ['label' => ThemeNav::link('Kontak Admin', 'fa fa-user'), 'url' => ['/site/contact'], 'active' => \Yii::$app->request->getUrl() == Url::toRoute(['/site/contact']), 'visible'=>(!Yii::$app->user->isGuest /*&& !User::notUpperManagement()*/)],
                       ['label' => ThemeNav::link('Surat Administrasi', 'fa fa-pencil-square-o'), 'url' => ['/analysis-request'], 'active' => (Yii::$app->controller->id == 'analysis-request'), 'visible'=>(!Yii::$app->user->isGuest && User::notUpperManagement()), 'items' => [
                           ['label' => (Yii::$app->controller->id == 'analysis-request' ? '&#10148; Permohonan Analisis': 'Permohonan Analisis' ), 'url' => ['/analysis-request'], 'visible'=> (!Yii::$app->user->isGuest && (Yii::$app->controller->id == 'analysis-request' || Yii::$app->controller->id == 'peneliti')), 'options'=>['class'=>'sidebar-menu header'],
                           ],

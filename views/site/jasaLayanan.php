@@ -352,8 +352,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $smFrekuensiPilihanJenisAnalisis,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'analisis',
-            'jumlah',
+            [
+                'attribute' => 'analisis',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute' =>'jumlah',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
         ],
     ]); ?>
             </div>
@@ -365,8 +377,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $smFrekuensiKlienJasaLayanan,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-                'kategori',
-                'jumlah',
+            [
+                'attribute'=>'kategori',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute'=>'jumlah',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
         ],
     ]); ?>
             </div>
@@ -378,9 +402,27 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $smFrekuensiJasaLayananPerBulan,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-                'tahun',
-                'bulan',
-                'jumlah',
+            [
+                'attribute'=> 'tahun',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute'=> 'bulan',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
+            [
+                'attribute'=> 'jumlah',
+                'filterInputOptions' => [
+                'class'       => 'form-control',
+                'placeholder' => 'Pencarian'
+                ]
+            ],
         ],
     ]); ?>
             </div>
