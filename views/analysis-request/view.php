@@ -91,8 +91,3 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </div>
 
-<div class= "row" style="padding: 15px">
-    <div class="line col-md-10">
-
-    </div>
-</div>

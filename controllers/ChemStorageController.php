@@ -103,7 +103,7 @@ class ChemStorageController extends Controller
             // validate all models
             $valid = $model->validate();
             $valid = Model::validateMultiple($modelsReagen) && $valid;
-
+            // var_dump($valid);die();
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
@@ -169,8 +169,10 @@ class ChemStorageController extends Controller
             $takeReagen->tanggal_pengambilan = date('Y-m-d');
             $takeReagen->chem_storage_id = $reagen->id_storage;
             $takeReagen->unit = $reagen->unit;
-            if($takeReagen->save()){
-                $reagen->jumlah -= $takeReagen->jumlah;
+            $reagen->jumlah -= $takeReagen->jumlah;
+            if($reagen->jumlah < 0) Yii::$app->session->setFlash('bahanKurang');
+            else {
+                $takeReagen->save();
                 $reagen->save();
             }
             return $this->redirect(['view', 'id' => $reagen->id]);
@@ -213,7 +215,7 @@ class ChemStorageController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = ChemStorage::findOne($id)) !== null) {
+        if (($model = ChemStorage::findOne($id)) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Storage does not exist.');
@@ -222,7 +224,7 @@ class ChemStorageController extends Controller
 
     public function findReagen($id)
     {
-        if (($reagen = Reagen::findOne($id)) !== null) {
+        if (($reagen = Reagen::findOne($id)) != null) {
             return $reagen;
         } else {
             throw new NotFoundHttpException('The requested Reagen does not exist.');

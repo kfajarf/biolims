@@ -74,12 +74,12 @@ use kartik\date\DatePicker;
                         <?php
                             // necessary for update action.
                             if (! $modelReagen->isNewRecord) {
-                                echo Html::activeHiddenInput($modelReagen, "[{$i}]id");
+                                echo Html::activeHiddenInput($modelReagen, "[{$i}]id_reagen");
                             }
                         ?>
                         <div class="row">
                             <div class="col-sm-6">
-                                <?= $form->field($modelReagen, "[{$i}]id")->textInput(['maxlength' => true]) ?>
+                                <?= $form->field($modelReagen, "[{$i}]id_reagen")->textInput(['maxlength' => true]) ?>
                             </div>
                             <div class="col-sm-6">
                                 <?= $form->field($modelReagen, "[{$i}]nama_reagen")->textInput(['maxlength' => true]) ?>

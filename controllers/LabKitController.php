@@ -102,6 +102,10 @@ class LabKitController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            $mulai = $model->tanggal_mulai;
+            $jangka = $model->jangka_kalibrasi;
+            $model->kalibrasi_selanjutnya = date('Y-m-d', strtotime("+".$jangka." Weeks", strtotime($mulai)));
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->renderAjax('update', [
@@ -228,6 +232,16 @@ class LabKitController extends Controller
         }
     }
 
+    public function indexKalibrasi($id)
+    {
+        $model = LabKit::findOne(['id'=>$id]);
+        if($model){
+            $model->kalibrasi_per_hari = 1;
+            $model->status_kalibrasi = 'belum dikalibrasi';
+            $model->save();
+        }
+    }
+
     public function setStatusPenggunaan($id)
     {
         $model = LabKit::findOne(['id'=>$id]);
@@ -259,7 +273,7 @@ class LabKitController extends Controller
 
     public function actionPengembalianAlat($id)
     {
-        $pengguna = PenggunaanAlat::findOne(['id' => $id]);
+        $pengguna = PenggunaanAlat::findOne(['id' => $id, 'status_pengembalian_alat' => 'belum dikembalikan']);
         $model = LabKit::findOne(['id' => $pengguna->kit_id]);
         if($model->status_penggunaan == 'digunakan'){
             $model->status_penggunaan = 'tersedia';

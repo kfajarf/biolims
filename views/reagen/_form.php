@@ -18,7 +18,7 @@ use kartik\date\DatePicker;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= $form->field($reagen, 'id')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($reagen, 'id_reagen')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-6">
             <?= $form->field($reagen, 'nama_reagen')->textInput(['maxlength' => true]) ?>

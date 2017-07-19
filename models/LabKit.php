@@ -36,7 +36,7 @@ class LabKit extends \yii\db\ActiveRecord
     {
         return [
             [['nama_alat', 'jangka_kalibrasi', 'tanggal_mulai'], 'required'],
-            [['jangka_kalibrasi'], 'integer'],
+            [['jangka_kalibrasi', 'kalibrasi_per_hari'], 'integer'],
             [['status_penggunaan'], 'default' , 'value' => 'tersedia'],
             [['status_kalibrasi'], 'default' , 'value' => 'sudah dikalibrasi'],
             [['tanggal_mulai', 'kalibrasi_selanjutnya', 'keterangan', 'status_kalibrasi'], 'safe'],
@@ -58,6 +58,7 @@ class LabKit extends \yii\db\ActiveRecord
             'kalibrasi_selanjutnya' => 'Kalibrasi Selanjutnya',
             'status_penggunaan' => 'Status Penggunaan',
             'status_kalibrasi' => 'Status Kalibrasi',
+            'kalibrasi_per_hari' => 'Kalibrasi hari ini',
         ];
     }
 

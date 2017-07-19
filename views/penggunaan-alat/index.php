@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     
     <div class="row" style="padding-left: 15px;padding-right: 15px">
-        <div class="col-sm-6" style="padding-left: 0px;padding-right: 10px">
+        <div class="col-sm-12" style="padding-left: 0px;padding-right: 10px">
             <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 0px">
             <?php
                 $gridColumns = [

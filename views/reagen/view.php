@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use app\models\Lokasi;
+use app\models\TakeReagen;
 use app\controllers\ChemStorageController;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
@@ -23,6 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="reagen-view">
 
     <!--<h1><?= Html::encode($this->title) ?></h1>-->
+
+    
+
     <p>
 
         <?= Html::button('Ambil Reagen', ['value' => Url::to('/chem-storage/take-reagen?id='.($id)), 'class' => 'btn btn-success', 'id' => 'modalButton']) ?>
@@ -53,6 +57,14 @@ $this->params['breadcrumbs'][] = $this->title;
         Modal::end();
      ?>
     
+     <?php if (Yii::$app->session->hasFlash('bahanKurang')): ?>
+
+        <div class="alert alert-danger col-md-10">
+            Jumlah yang diambil melebihi jumlah bahan yang tersedia. Silahkan ambil sesuai dengan jumlah yang tersedia. 
+        </div>
+
+    <?php endif; ?>
+
     <div class= "row" style="padding: 15px">
     <div class="col-md-10" style="border-top: 7px solid rgba(0, 100, 170, 1); overflow-x: auto; white-space: nowrap; background-color: white; padding: 20px 20px 0px 20px">
     <?= DetailView::widget([
@@ -62,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'tanggal_masuk',
                 'value' => $model -> tanggal_masuk,
             ],
-            'id',
+            'id_reagen',
             'nama_reagen',
             'jenis_reagen',
             'jumlah',
@@ -86,7 +98,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
     </div>
-
+<?php $log = TakeReagen::findAll(['id_reagen' => $reagen->id, 'chem_storage_id' => $reagen->id_storage]);
+    if($log != NULL): ?>
     <div class="row" style="padding-left: 15px;padding-right: 15px">
         <div class="col-sm-10" style="padding-left: 0px;padding-right: 0px">
             <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 0px">
@@ -168,5 +181,5 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <?php Pjax::end(); ?>
-
+<?php endif; ?>
 </div>

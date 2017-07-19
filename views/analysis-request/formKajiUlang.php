@@ -63,7 +63,7 @@ use yii\helpers\ArrayHelper;
                                 <?= $form->field($kajiUlangItem, "[{$i}]parameter")->textInput(['maxlength' => true]) ?>
                             </div>
                             <!-- <div class="col-md-6">
-                                <?= $form->field($kajiUlangItem, "[{$i}]kesimpulan")->textarea(['rows' => 1]) ?>
+                                <?= NULL //$form->field($kajiUlangItem, "[{$i}]kesimpulan")->textarea(['rows' => 1]) ?>
                             </div> -->
                         </div>
                         <div class="row">

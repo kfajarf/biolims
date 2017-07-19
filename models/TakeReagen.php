@@ -30,9 +30,9 @@ class TakeReagen extends \yii\db\ActiveRecord
     {
         return [
             [['id_reagen', 'nama_reagen', 'jumlah', 'tanggal_pengambilan'], 'required'],
-            [['jumlah'], 'integer'],
+            [['id_reagen', 'jumlah'], 'integer'],
             [['tanggal_pengambilan','chem_storage_id', 'unit'], 'safe'],
-            [['id_reagen', 'nama_reagen'], 'string', 'max' => 100],
+            [['nama_reagen'], 'string', 'max' => 100],
             [['id_reagen'], 'exist', 'skipOnError' => true, 'targetClass' => Reagen::className(), 'targetAttribute' => ['id_reagen' => 'id']],
         ];
     }

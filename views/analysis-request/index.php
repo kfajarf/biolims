@@ -102,7 +102,8 @@ for ($idx=1; $idx <= 12; $idx++)
                 'class'       => 'form-control',
                 'placeholder' => 'Pencarian',
                 ],
-                'filter' => array('biasa' => 'Biasa', 'percepatan' => 'Percepatan'),
+                // 'filter' => array('biasa' => 'Biasa', 'percepatan' => 'Percepatan'),
+                'filter' => Html::activeDropDownList($searchModel, 'status_pengujian', array('biasa' => 'Biasa', 'percepatan' => 'Percepatan'), ['class' => 'form-control', 'prompt' => 'pencarian']),
             ],
             //'tanggal_diterima',
             [

@@ -18,7 +18,7 @@ class LabKitSearch extends LabKit
     public function rules()
     {
         return [
-            [['id', 'jangka_kalibrasi'], 'integer'],
+            [['id', 'jangka_kalibrasi', 'kalibrasi_per_hari'], 'integer'],
             [['nama_alat', 'tanggal_mulai', 'kalibrasi_selanjutnya', 'status_penggunaan','status_kalibrasi'], 'safe'],
         ];
     }
@@ -63,6 +63,7 @@ class LabKitSearch extends LabKit
             'jangka_kalibrasi' => $this->jangka_kalibrasi,
             'tanggal_mulai' => $this->tanggal_mulai,
             'kalibrasi_selanjutnya' => $this->kalibrasi_selanjutnya,
+            'kalibrasi_per_hari' => $this->kalibrasi_per_hari,
         ]);
 
         $query->andFilterWhere(['like', 'nama_alat', $this->nama_alat])

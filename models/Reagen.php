@@ -39,13 +39,12 @@ class Reagen extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'nama_reagen', 'jenis_reagen', 'jumlah', 'jumlah_minimum', 'unit', 'tanggal_kadaluarsa', 'id_lokasi', 'id_supplier'], 'required'],
+            [['id_reagen', 'nama_reagen', 'jenis_reagen', 'jumlah', 'jumlah_minimum', 'unit', 'tanggal_kadaluarsa', 'id_lokasi', 'id_supplier'], 'required'],
             [['jumlah', 'jumlah_minimum'], 'number'],
-            [['id'], 'unique'],
             [['tanggal_kadaluarsa', 'status'], 'safe'],
             [['status'], 'default', 'value' => '-'],
             [['id_lokasi', 'id_supplier', 'id_storage'], 'integer'],
-            [['id', 'nama_reagen', 'status'], 'string', 'max' => 100],
+            [['id_reagen', 'nama_reagen', 'status'], 'string', 'max' => 100],
             [['unit'], 'string', 'max' => 20],
             [['id_storage'], 'exist', 'skipOnError' => true, 'targetClass' => ChemStorage::className(), 'targetAttribute' => ['id_storage' => 'id']],
             [['id_lokasi'], 'exist', 'skipOnError' => true, 'targetClass' => Lokasi::className(), 'targetAttribute' => ['id_lokasi' => 'id']],
@@ -59,7 +58,7 @@ class Reagen extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'Id Reagen',
+            'id_reagen' => 'Id Reagen',
             'nama_reagen' => 'Nama Reagen',
             'jenis_reagen' => 'Jenis Reagen',
             'jumlah' => 'Jumlah',

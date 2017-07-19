@@ -33,7 +33,7 @@ use kartik\date\DatePicker;
                 ?>
             </div>
             
-            <!-- <div class="col-sm-4">
+            <div class="col-sm-4">
                 <?= $form->field($model, 'tanggal_diterima')->widget(DatePicker::classname(), [
                     'options' => ['placeholder' => '-- Tanggal Selesai --'],
                     'pluginOptions' => [
@@ -43,7 +43,7 @@ use kartik\date\DatePicker;
                         ]
                     ]) 
                 ?>
-            </div> -->
+            </div>
         </div>
 
         <div class="line" style="padding: 0px" align="center"><h4><b>Pengirim</b></h4></div>
@@ -114,7 +114,7 @@ use kartik\date\DatePicker;
                     <?= $form->field($modelKAnalisis, "[{$indexAnalisis}]analisis")->textInput(['maxlength' => true])->widget(\yii\jui\AutoComplete::classname(), [
                             'options' => ['placeholder' => '', 'class' => 'form-control'],
                             'clientOptions' =>  [
-                                'source' => ArrayHelper::getColumn(JenisAnalisis::find()->all(), 'jenis'),  ],
+                                'source' => ArrayHelper::getColumn(FrekuensiPilihanJenisAnalisis::find()->all(), 'analisis'),  ],
                             ]
                         )
                     ?>
@@ -140,7 +140,7 @@ use kartik\date\DatePicker;
         <div class="col-sm-2">
             <?= $form->field($model, 'status_pengujian')->dropDownList([ 'biasa' => 'Biasa', 'percepatan' => 'Percepatan', ], ['prompt' => '--Pengujian--']) ?>
         </div>
-        <!-- <div class="col-sm-4">
+        <div class="col-sm-4">
             <?= $form->field($model, 'tanggal_selesai')->widget(DatePicker::classname(), [
             'options' => ['placeholder' => '-- Tanggal Selesai --'],
             'pluginOptions' => [
@@ -149,7 +149,7 @@ use kartik\date\DatePicker;
                 'todayHighlight' => true,
                 ]
             ]) ?>
-        </div> -->
+        </div>
         <div class="col-sm-3">
             <?= $form->field($model, 'total_biaya')->textInput() ?>
         </div>

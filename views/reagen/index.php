@@ -55,11 +55,11 @@ $id =1;
 
     
     <div class="row" style="padding-left: 15px;padding-right: 15px">
-        <div class="col-sm-6" style="padding-left: 0px;padding-right: 10px">
+        <div class="col-sm-12" style="padding-left: 0px;padding-right: 0px">
             <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 0px">
             <?php
                 $gridColumns = [
-                    'id',
+                    'id_reagen',
                     'nama_reagen',
                     'jenis_reagen',
                     'jumlah',
@@ -115,8 +115,8 @@ $id =1;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => 'id',
-                'value' => 'id',
+                'attribute' => 'id_reagen',
+                'value' => 'id_reagen',
                 'filterInputOptions' => [
                 'class'       => 'form-control',
                 'placeholder' => 'Pencarian'

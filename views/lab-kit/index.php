@@ -77,14 +77,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 {
                     $today = date('Y-m-d');
                     // var_dump($today);die();
-                    if($today == $model->kalibrasi_selanjutnya)
-                    {
-                    //     return ['class' => 'danger'];
-                    // } else if ($flagStock || $flagExpired){
+                    if(!$model->kalibrasi_per_hari && $today == $model->kalibrasi_selanjutnya && $model->status_kalibrasi == 'sudah dikalibrasi'){
+                        \app\controllers\LabKitController::indexKalibrasi($model->id);
+                    } else if ($today > $model->kalibrasi_selanjutnya) {
+                        $model->kalibrasi_per_hari = 0;
+                        $model->save();                        
+                    } else if ($model->status_kalibrasi == 'belum dikalibrasi') {
                         return "Peringatan Kalibrasi Alat";
-                    } else {
-                        return date('d-m-Y', strtotime($model->kalibrasi_selanjutnya));
-                    }
+                    } else return date('d-m-Y', strtotime($model->kalibrasi_selanjutnya));
                 }
             ],
             [
@@ -124,16 +124,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 {
                     $today = date('Y-m-d');
                     // var_dump($today);die();
-                    $pengguna = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->id, 'status_pengembalian_alat' => 'belum dikembalikan'])->andWhere(['=', 'tanggal_penggunaan', $today])->orderBy(['tanggal_penggunaan' => SORT_ASC])->one();
-                    if($pengguna != NULL){    
-                        if(($today == $pengguna->tanggal_penggunaan) && ($pengguna->status_pengembalian_alat == 'belum dikembalikan'))
+                    $pengguna = \app\models\PenggunaanAlat::find()->where(['kit_id' => $model->id, 'status_pengembalian_alat' => 'belum dikembalikan'])->orderBy(['tanggal_penggunaan' => SORT_ASC])->one();
+                    // var_dump($pengguna == NULL);die(); 
+                    if($pengguna != NULL){   
+                        if(($today == $pengguna->tanggal_penggunaan))
                         {
                             \app\controllers\LabKitController::setStatusPenggunaan($model->id);
                         }
-                        if($model->status_penggunaan == 'digunakan'){
-                            return Html::a('Pengembalian Alat',['pengembalian-alat', 'id' => $pengguna->id], ['class' => 'btn btn-primary']); 
-                        }
-                        else return '-';
+                    }
+                    if($model->status_penggunaan == 'digunakan'){
+                        return Html::a('Pengembalian Alat',['pengembalian-alat', 'id' => $pengguna->id], ['class' => 'btn btn-primary']); 
                     }
                     else return '-';
                 }

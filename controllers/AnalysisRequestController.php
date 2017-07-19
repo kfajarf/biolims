@@ -115,8 +115,8 @@ class AnalysisRequestController extends Controller
             $modelsKAnalisis = Model::createMultiple(KategoriAnalisis::classname());
             Model::loadMultiple($modelsKAnalisis, Yii::$app->request->post());
 
-            $model->tanggal_diterima = date('2017-01-04');
-            $model->tanggal_selesai = date('Y-m-d', strtotime($model->tanggal_diterima. '+ 20 day'));
+            // $model->tanggal_diterima = date('2017-01-04');
+            // $model->tanggal_selesai = date('Y-m-d', strtotime($model->tanggal_diterima. '+ 20 day'));
             $model->sisa = $model->total_biaya - $model->dp;
             $model->save();
             $pemohon->request_id = $model->id;
@@ -529,7 +529,7 @@ class AnalysisRequestController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = AnalysisRequest::findOne($id)) !== null) {
+        if (($model = AnalysisRequest::findOne($id)) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Model does not exist.');
@@ -538,7 +538,7 @@ class AnalysisRequestController extends Controller
 
     public function findSampel($lpsbId)
     {
-        if (($model = DataJasaLayanan::find()->where(['=', 'lpsb_order_no', $lpsbId])->asArray()->all()) !== null) {
+        if (($model = DataJasaLayanan::find()->where(['=', 'lpsb_order_no', $lpsbId])->asArray()->all()) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Sampel does not exist.');
@@ -547,7 +547,7 @@ class AnalysisRequestController extends Controller
 
     public function findDataJasaLayanan($lpsbId)
     {
-        if (($model = DataJasaLayanan::find()->where(['=', 'id', $lpsbId])->asArray()->all()) !== null) {
+        if (($model = DataJasaLayanan::find()->where(['=', 'id', $lpsbId])->asArray()->all()) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested Data does not exist.');
@@ -556,7 +556,7 @@ class AnalysisRequestController extends Controller
 
     public function findPemohon($lpsbId)
     {
-        if (($model = PemohonAnalisis::find()->where(['=', 'request_id', $lpsbId])->one()) !== null) {
+        if (($model = PemohonAnalisis::find()->where(['=', 'request_id', $lpsbId])->one()) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested "Pemohon Analisis" does not exist.');

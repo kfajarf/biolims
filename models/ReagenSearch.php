@@ -22,13 +22,12 @@ class ReagenSearch extends Reagen
     public $lokasi_penyimpanan;
     public $supplier;
     public $tanggal_masuk;
-    public $id_reagen;
 
 
     public function rules()
     {
         return [
-            [['id', 'nama_reagen', 'jenis_reagen', 'unit', 'tanggal_kadaluarsa', 'pemilik', 'lokasi_penyimpanan', 'supplier', 'id_lokasi', 'id_supplier', 'id_storage', 'tanggal_masuk'], 'safe'],
+            [['id_reagen', 'nama_reagen', 'jenis_reagen', 'unit', 'tanggal_kadaluarsa', 'pemilik', 'lokasi_penyimpanan', 'supplier', 'id_lokasi', 'id_supplier', 'id_storage', 'tanggal_masuk'], 'safe'],
             [['jumlah', 'jumlah_minimum'], 'number'],
         ];
     }
@@ -101,7 +100,7 @@ class ReagenSearch extends Reagen
             'id_storage' => $this->id_storage,
         ]);
 
-        $query->andFilterWhere(['like', 'reagen.id', $this->id])
+        $query->andFilterWhere(['like', 'id_reagen', $this->id_reagen])
             ->andFilterWhere(['like', 'nama_reagen', $this->nama_reagen])
             ->andFilterWhere(['like', 'jenis_reagen', $this->jenis_reagen])
             ->andFilterWhere(['like', 'unit', $this->unit])

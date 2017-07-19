@@ -115,7 +115,7 @@ class ReagenController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Reagen::findOne($id)) !== null) {
+        if (($model = Reagen::findOne($id)) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -101,24 +101,25 @@ if($kwitansiItem == NULL) {
 </div>
     </div>
 
-<div class= "row" style="padding: 15px">
-    <div class= "line col-md-10">
-        <?php Pjax::begin(); ?>    
-            <?php if($rekapBahan !== NULL){
-            echo GridView::widget([
-                'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+<?php if($rekapBahan != NULL): ?>
+    <div class= "row" style="padding: 15px">
+        <div class= "line col-md-10">
+            <?php Pjax::begin(); ?>    
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
 
-                     'harga', 
-                     'jumlah',
-                     'nama_bahan',
-                     'spesifikasi',
-                     'keterangan',
-                ],
-            ]); }?>
-        <?php Pjax::end(); ?></div>
-</div>
+                         'harga', 
+                         'jumlah',
+                         'nama_bahan',
+                         'spesifikasi',
+                         'keterangan',
+                    ],
+                ]); ?> 
+            <?php Pjax::end(); ?></div>
+        </div>
     </div>
+<?php endif; ?>
 </div>

@@ -596,7 +596,7 @@ class PenelitiController extends Controller
 
     protected function findModel($id)
     {
-        if (($model = Peneliti::findOne($id)) !== null) {
+        if (($model = Peneliti::findOne($id)) != null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

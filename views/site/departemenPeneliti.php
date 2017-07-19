@@ -229,7 +229,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end(); ?>
 
     <div class="row" style="padding-left: 15px;padding-right: 15px">
-        <div class="col-sm-12" style="padding-left: 0px;padding-right: 15px">
+        <div class="col-sm-12" style="padding-left: 0px;padding-right: 0">
             <div class="col-sm-4" style="background-color: white;padding-left: 0px;padding-right: 15px">
             <?php
                 $gridColumnsInfoDepartemenPeneliti = [
@@ -260,20 +260,14 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <?php Pjax::begin(); ?>
     <div class= "row" style="padding: 15px">
-    <div class="col-md-12" style="padding-left: 0px; padding-right: 15px;">
+    <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
         <div class="line">
     <?= GridView::widget([
         'dataProvider' => $dpInfoDepartemenPeneliti,
         'filterModel' => $smInfoDepartemenPeneliti,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            [
-                'attribute' => 'id',
-                'filterInputOptions' => [
-                'class'       => 'form-control',
-                'placeholder' => 'Pencarian'
-                ]
-            ],
+            
             [
                 'attribute' => 'nama_peneliti',
                 'filterInputOptions' => [
