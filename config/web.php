@@ -9,6 +9,7 @@ $config = [
     'layoutPath'=>'@app/themes/adminLTE/layouts',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'id',
     'components' => [
         'formatter' => [
             // 'dateFormat' => 'dd.MM.yyyy',

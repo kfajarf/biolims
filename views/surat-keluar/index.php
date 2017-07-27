@@ -7,8 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\SuratKeluarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Surat Keluar';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = 'Surat Keluar';
 ?>
 <div class="surat-keluar-index">
 

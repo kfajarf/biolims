@@ -19,7 +19,7 @@ class PenelitiSearch extends Peneliti
     {
         return [
             [['id', 'departemen_id', 'uang_masuk_lpsb', 'deposit_lpsb', 'biaya_hasil_rekapitulasi'], 'integer'],
-            [['nama_lengkap', 'tempat_tanggal_lahir', 'institusi', 'nrp_nim', 'no_handphone', 'email', 'alamat_dan_no_telp_bogor', 'alamat_dan_no_telp_orang_tua', 'judul_penelitian', 'tanggal_masuk_lpsb', 'keterangan'], 'safe'],
+            [['nama_lengkap', 'tempat_tanggal_lahir', 'institusi', 'nrp_nim', 'no_handphone', 'email', 'alamat_dan_no_telp_bogor', 'alamat_dan_no_telp_orang_tua', 'judul_penelitian', 'tanggal_masuk_lpsb', 'keterangan', 'status'], 'safe'],
         ];
     }
 
@@ -47,6 +47,7 @@ class PenelitiSearch extends Peneliti
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['status' => SORT_DESC, 'tanggal_masuk_lpsb' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -76,6 +77,7 @@ class PenelitiSearch extends Peneliti
             ->andFilterWhere(['like', 'alamat_dan_no_telp_bogor', $this->alamat_dan_no_telp_bogor])
             ->andFilterWhere(['like', 'alamat_dan_no_telp_orang_tua', $this->alamat_dan_no_telp_orang_tua])
             ->andFilterWhere(['like', 'judul_penelitian', $this->judul_penelitian])
+            ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
 
         return $dataProvider;

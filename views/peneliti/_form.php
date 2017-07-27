@@ -26,9 +26,11 @@ use app\models\Departemen;
     <div class="row">
         <div class="col-md-12">
     <?php $form = ActiveForm::begin([
-        'id' => 'dynamic-form',
-        // 'enableAjaxValidation' => true,
-    ]); ?>
+        'id' => 'peneliti-form',
+        'enableAjaxValidation' => false,
+    ]); 
+        $departemen = Departemen::find()->all();
+    ?>
         <div class="row">
             <div class="col-md-6">
                 <?= $form->field($model, 'nama_lengkap')->textInput(['maxlength' => true]) ?>
@@ -43,7 +45,9 @@ use app\models\Departemen;
             </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'departemen_id')->dropDownList(
-                        ArrayHelper::map(Departemen::find()->all(), 'id', 'nama_departemen'), ['prompt' => '-- Departemen --']
+                        ArrayHelper::map($departemen, 'id', function($departemen) {
+                            return $departemen->kode_nim. ' - ' . $departemen->nama_departemen;
+                        }), ['prompt' => '-- Departemen --']
                     ) 
                 ?>
             </div>
@@ -74,8 +78,9 @@ use app\models\Departemen;
                     'insertButton' => '.add-pembimbing', // css class
                     'deleteButton' => '.remove-pembimbing', // css class
                     'model' => $modelsPembimbing[0],
-                    'formId' => 'dynamic-form',
+                    'formId' => 'peneliti-form',
                     'formFields' => [
+                        'id',
                         'nama_pembimbing'
                     ],
                 ]); ?>
@@ -99,7 +104,7 @@ use app\models\Departemen;
                                     <?php
                                         // necessary for update action.
                                         if (! $modelPembimbing->isNewRecord) {
-                                            echo Html::activeHiddenInput($modelPembimbing, "[{$i}]nama_pembimbing");
+                                            echo Html::activeHiddenInput($modelPembimbing, "[{$i}]id");
                                         }
                                     ?>
                                     <div class="row">
@@ -125,8 +130,9 @@ use app\models\Departemen;
                     'insertButton' => '.add-tempat', // css class
                     'deleteButton' => '.remove-tempat', // css class
                     'model' => $modelsTempat[0],
-                    'formId' => 'dynamic-form',
+                    'formId' => 'peneliti-form',
                     'formFields' => [
+                        'id',
                         'nama_tempat'
                     ],
                 ]); ?>
@@ -150,7 +156,7 @@ use app\models\Departemen;
                                     <?php
                                         // necessary for update action.
                                         if (! $modelTempat->isNewRecord) {
-                                            echo Html::activeHiddenInput($modelTempat, "[{$idx}]nama_tempat");
+                                            echo Html::activeHiddenInput($modelTempat, "[{$idx}]id");
                                         }
                                     ?>
                                     <div class="row">
@@ -172,8 +178,8 @@ use app\models\Departemen;
         <div class="row">
             <div class="col-md-4">
                 <?= $form->field($model, 'tanggal_masuk_lpsb')->widget(DatePicker::classname(), [
+                    'options' => ['placeholder' => '-- 2017/12/31 --'],
                     'pluginOptions' => [
-                        'startDate' => date('Y-m-d'),
                         'autoclose'=>true,
                         'format' => 'yyyy-mm-dd',
                         'todayHighlight' => true,

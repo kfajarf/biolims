@@ -18,29 +18,18 @@ use kartik\date\DatePicker;
         // 'enableAjaxValidation' => true,
     ]); ?>
 
-            		<?= $form->field($kwitansi, 'no_kwitansi')->textInput(['maxlength' => true]) ?>
+	<?= $form->field($kwitansi, 'no_kwitansi')->textInput(['maxlength' => true]) ?>
 
-                    <?= $form->field($kwitansi, 'tanggal_kwitansi')->widget(DatePicker::classname(), [
-                        'options' => ['placeholder' => 'Masukkan Tanggal Kadaluarsa'],
-                        'pluginOptions' => [
-                            'startDate' => date('Y-m-d'),
-                            'autoclose'=>true,
-                            'format' => 'yyyy-mm-dd',
-                            'todayHighlight' => true,
-                            ]
-                        ])
-                    ?>
-    <!-- <div class="row">
-        <div class="col-sm-3">
-            <?= $form->field($kwitansi, 'untuk_pembayaran_analisis')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($kwitansi, 'terbilang')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($kwitansi, 'jumlah_biaya')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($kwitansi, 'terbilang')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-12">
-            <?= $form->field($kwitansi, 'telah_terima_dari')->textInput(['maxlength' => true]) ?>
-        </div>
-    </div> -->
+    <?= $form->field($kwitansi, 'tanggal_kwitansi')->widget(DatePicker::classname(), [
+        'options' => ['placeholder' => '-- 2017/12/31 --'],
+        'pluginOptions' => [
+            'startDate' => date('Y-m-d'),
+            'autoclose'=>true,
+            'format' => 'yyyy-mm-dd',
+            'todayHighlight' => true,
+            ]
+        ])
+    ?>
     <div class="form-group">
         <?= Html::submitButton($kwitansi->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
     </div>

@@ -32,7 +32,7 @@ class SuratMasuk extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nomor_surat', 'tanggal_surat', 'tanggal_terima', 'sumber_surat', 'perihal'], 'required'],
+            [['nomor_surat', 'tanggal_surat', 'tanggal_terima', 'sumber_surat', 'perihal','file_surat'], 'required'],
             [['tanggal_surat', 'tanggal_terima'], 'safe'],
             [['nomor_surat', 'sumber_surat', 'perihal', 'keterangan'], 'string', 'max' => 100],
             [['file_surat'], 'file', 'extensions' => 'pdf, docx, doc, jpeg, jpg, png, zip, rar', 'maxSize' => \Yii::$app->params['maxFileSize']],

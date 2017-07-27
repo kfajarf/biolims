@@ -50,7 +50,7 @@ class AnalysisRequestSearch extends AnalysisRequest
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['tanggal_selesai' => SORT_ASC]],
+            'sort' => ['defaultOrder' => ['status' => SORT_DESC, 'tanggal_selesai' => SORT_ASC]],
         ]);
         
         $dataProvider -> sort -> attributes['nama_lengkap'] = [

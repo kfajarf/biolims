@@ -7,9 +7,9 @@ use app\models\SampelSearch;
 /* @var $this yii\web\View */
 /* @var $model app\models\AnalysisRequest */
 
-$this->title = $model->lpsb_order_no;
+$this->title = '';
 $this->params['breadcrumbs'][] = ['label' => 'Analysis Requests', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $model->lpsb_order_no;
 ?>
 
 <div class="analysis-request-view">
@@ -79,9 +79,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'status_pengujian',
             'tanggal_diterima',
             'tanggal_selesai',
-            'total_biaya',
-            'dp',
-            'sisa',
+            [
+                'attribute' => 'total_biaya',
+                'value' => \Yii::$app->formatter->format($model->total_biaya, ['decimal', 0]),
+            ],
+            [
+                'attribute' => 'dp',
+                'value' => \Yii::$app->formatter->format($model->dp, ['decimal', 0]),
+            ],
+            [
+                'attribute' => 'sisa',
+                'value' => \Yii::$app->formatter->format($model->sisa, ['decimal', 0]),
+            ],
             'keterangan:ntext',
             'status',
         ],

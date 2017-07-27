@@ -46,6 +46,22 @@ use kartik\date\DatePicker;
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <?= $form->field($kwitansi, 'jumlah_biaya')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-sm-9">
+            <?= $form->field($kwitansi, 'terbilang')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <?= $form->field($kwitansi, 'telah_terima_dari')->textInput(['maxlength' => true]) ?>
+		</div>
+        <!-- <div class="col-sm-9">
+            <?= $form->field($kwitansi, 'untuk_pembayaran_analisis')->textInput(['maxlength' => true]) ?>
+       	</div> -->
+    </div>
     <div class="form-group">
         <?= Html::submitButton($kwitansi->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-primary']) ?>
     </div>

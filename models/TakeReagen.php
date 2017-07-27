@@ -29,7 +29,7 @@ class TakeReagen extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_reagen', 'nama_reagen', 'jumlah', 'tanggal_pengambilan'], 'required'],
+            [['id_reagen', 'nama_reagen', 'nama_pengambil', 'jumlah', 'tanggal_pengambilan'], 'required'],
             [['id_reagen', 'jumlah'], 'integer'],
             [['tanggal_pengambilan','chem_storage_id', 'unit'], 'safe'],
             [['nama_reagen'], 'string', 'max' => 100],
@@ -43,6 +43,7 @@ class TakeReagen extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
+            'nama_pengambil' => 'Nama Lengkap',
             'id_reagen' => 'Id Reagen',
             'nama_reagen' => 'Nama Reagen',
             'jumlah' => 'Jumlah',

@@ -18,7 +18,7 @@ $label = 'Create';
     <?= $this->render('_formInvoice', [
         'model' => $model,
         'invoice' => $invoice,
-        'modelsBahan' => $modelsBahan,
+        'modelsSampelInvoice' => $modelsSampelInvoice,
     ]) ?>
 
 </div>

@@ -14,7 +14,12 @@ use yii\helpers\ArrayHelper;
 	    <?php $form = ActiveForm::begin(); ?>
 		<div class="row">
 		    <div class="col-md-12">
-		    	<?= $form->field($reagen, 'id', [
+		    	<?= $form->field($takeReagen, 'nama_pengambil')->textInput() ?>
+		    </div>
+		</div>
+		<div class="row">
+		    <div class="col-md-12">
+		    	<?= $form->field($reagen, 'id_reagen', [
 					'inputOptions' => ['class' => 'form-control ', 'disabled' => true],
 				]) ?>
 		    </div>
@@ -28,7 +33,14 @@ use yii\helpers\ArrayHelper;
 		</div>
 		<div class="row">
 		    <div class="col-md-12">
-		    	<?= $form->field($takeReagen, 'jumlah')->textInput() ?>
+		    	<?= $form->field($reagen, 'jumlah', [
+					'inputOptions' => ['class' => 'form-control ', 'disabled' => true],
+				])->label('Tersedia ('. $reagen->unit .')') ?>
+		    </div>
+		</div>
+		<div class="row">
+		    <div class="col-md-12">
+		    	<?= $form->field($takeReagen, 'jumlah')->textInput()->label('Jumlah Pengambilan ('. $reagen->unit.')') ?>
 		    </div>
 		</div>
     <div class="form-group">

@@ -50,7 +50,7 @@ class RekapitulasiBahan extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nama_bahan' => 'Nama Bahan',
-            'spesifikasi' => 'Spesifikasi',
+            'spesifikasi' => 'Unit',
             'jumlah' => 'Jumlah',
             'harga' => 'Harga',
             'keterangan' => 'Keterangan',

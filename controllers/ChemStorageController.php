@@ -195,8 +195,15 @@ class ChemStorageController extends Controller
     {
         $this->checkPrivilege();
         $reagen = $this->findReagen($id);
+        // var_dump($reagen);die();
         $idStorage = $reagen->id_storage;
         $model = $this->findModel($idStorage);
+        $takeReagen = \app\models\TakeReagen::findAll(['id_reagen' => $reagen->id]);
+        if($takeReagen != NULL) {
+            foreach ($takeReagen as $idx => $takeReagenItem) {
+                $takeReagenItem->delete();
+            }
+        }
         $this->findReagen($id)->delete();
         if($flag = $this->isEmptyStorage($idStorage))
         {
@@ -258,7 +265,7 @@ class ChemStorageController extends Controller
     {
         $reagen = Reagen::find()->where(['id' => $id])->one();
         $kadaluarsa = $reagen->tanggal_kadaluarsa;
-        $month = 3;
+        $month = 1;
         $warning = strtotime("-".$month." Months", strtotime($kadaluarsa));
         $today = strtotime(date('Y-m-d'));
         $flag = false;

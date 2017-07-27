@@ -20,7 +20,7 @@ use kartik\date\DatePicker;
     <div class="row">
         <div class="col-md-6">
             <?= $form->field($model, 'tanggal_surat')->widget(DatePicker::classname(), [
-                    'options' => ['placeholder' => '-- Tanggal Surat --'],
+                    'options' => ['placeholder' => '-- 2017/12/31 --'],
                     'pluginOptions' => [
                         'autoclose'=>true,
                         'format' => 'yyyy-mm-dd',
@@ -31,7 +31,7 @@ use kartik\date\DatePicker;
         </div>
         <div class="col-md-6">
             <?= $form->field($model, 'tanggal_terima')->widget(DatePicker::classname(), [
-                    'options' => ['placeholder' => '-- Tanggal Terima --'],
+                    'options' => ['placeholder' => '-- 2017/12/31 --'],
                     'pluginOptions' => [
                         'autoclose'=>true,
                         'format' => 'yyyy-mm-dd',

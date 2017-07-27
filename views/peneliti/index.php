@@ -1,14 +1,16 @@
 <?php
+namespace app\models;
 
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PenelitiSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Penelitian';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = 'Penelitian';
 ?>
 <div class="peneliti-index">
 
@@ -27,13 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 
-                [
+                /*[
                     'attribute' => 'id',
                     'filterInputOptions' => [
                     'class'       => 'form-control',
                     'placeholder' => 'Pencarian'
                     ]
-                ],
+                ],*/
                 [
                     'attribute' => 'nama_lengkap',
                     'filterInputOptions' => [
@@ -57,10 +59,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'departemen_id',
-                    'filterInputOptions' => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Pencarian'
-                    ]
+                    'value' => 'departemen.nama_departemen',
+                    'filter' => Html::activeDropDownList($searchModel, 'departemen_id', ArrayHelper::map(Departemen::find()->asArray()->all(), 'id', 'nama_departemen'), ['class' => 'form-control', 'prompt' => '-- Departemen --']),
                 ],
                 [
                     'attribute' => 'nrp_nim',
@@ -73,13 +73,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'email:email',
                     // 'alamat_dan_no_telp_bogor',
                     // 'alamat_dan_no_telp_orang_tua',
-                [
+                /*[
                     'attribute' => 'judul_penelitian',
                     'filterInputOptions' => [
                     'class'       => 'form-control',
                     'placeholder' => 'Pencarian'
                     ]
-                ],
+                ],*/
                 [
                     'attribute' => 'tanggal_masuk_lpsb',
                     'filterInputOptions' => [
@@ -99,6 +99,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'       => 'form-control',
                     'placeholder' => 'Pencarian'
                     ]
+                ],
+                [
+                    'attribute' => 'status',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ],
+                    'value' => function($model)
+                    {
+                        $kwitansi = \app\models\Kwitansi::findOne(['id_peneliti' => $model->id]);
+                        if ($kwitansi != NULL) {
+                            $model->status = 'lunas';
+                            $model->save();
+                        }
+                        return $model->status;
+                    }
                 ],
                     // 'keterangan',
                     // 'biaya_hasil_rekapitulasi',

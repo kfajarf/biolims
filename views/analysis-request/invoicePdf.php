@@ -4,16 +4,12 @@
 </head>
 <body>
 
-<?php
-	/////////TEST/////////
-	$name = 'ipb';
-	$ext = 'jpg';
-?>
+
 <div class="row">
 <table class="test" cellspacing="0" style="padding-right: 12; padding-left: 12" width="100%">
 	<tr>
 		<td width=13% align=center >
-			<img src="/images/<?= $name ?>.<?= $ext ?>" vAlign=center width=60 height=60>
+			<img src="/images/ipb.jpg" vAlign=center width=60 height=60>
 		</td>
 		<td width=76% align=center vAlign=center>
 			<font style="font-size: 11"><b>Kementerian Riset, Teknologi dan Pendidikan Tinggi</b>
@@ -115,72 +111,64 @@
 		<th height="30" align="center" align="center" style="width: 10%; border-top: 1px solid black; border-bottom: 1px solid black">
 			<font style="font-size: 11">NO</font>
 		</th>
-		<th align="left" style="width: 55%; border-top: 1px solid black; border-bottom: 1px solid black; padding-left: 15px">
+		<th align="center" style="width: 30%; border-top: 1px solid black; border-bottom: 1px solid black">
 			<font style="font-size: 11">SAMPEL</font>
+		</th>
+		<th align="center" style="width: 10%; border-top: 1px solid black; border-bottom: 1px solid black">
+			<font style="font-size: 11">KODE</font>
+		</th>
+		<th align="center" style="width: 15%; border-top: 1px solid black; border-bottom: 1px solid black">
+			<font style="font-size: 11">ANALISIS</font>
 		</th>
 		<th align="center" style="width: 5%; border-top: 1px solid black; border-bottom: 1px solid black">
 			<font style="font-size: 11">JML</font>
 		</th>
-		<th align="left" style="width: 10%; border-top: 1px solid black; border-bottom: 1px solid black">
-			<font style="font-size: 11">UNIT</font>
+		<th align="center" style="width: 10%; border-top: 1px solid black; border-bottom: 1px solid black">
+			<font style="font-size: 11">HARGA</font>
 		</th>
-		<th align="right" style="width: 20%; border-top: 1px solid black; border-bottom: 1px solid black; padding-right: 15px">
+		<th align="center" style="width: 20%; border-top: 1px solid black; border-bottom: 1px solid black">
 			<font style="font-size: 11">JUMLAH HARGA</font>
 		</th>
 	<?php //////////SAMPEL SECTION///////
-		foreach ($rekapitulasiBahan as $idx => $rekapItem) {
+		foreach ($sampelInvoice as $idx => $sampelItem) {
 			echo '<tr>
 				<td height="25" align="center"><font style="font-size: 11">
 					'.++$idx.'
 				</font></td>
-				<td align="left" style="padding-left: 15px"><font style="font-size: 11">
-					'.$rekapItem->nama_bahan.'
+				<td align="center"><font style="font-size: 11">
+					'.$sampelItem->sampel.'
 				</font></td>
 				<td align="center"><font style="font-size: 11">
-					'.$rekapItem->jumlah.'
+					'.$sampelItem->kode.'
 				</font></td>
-				<td align="left"><font style="font-size: 11">
-					'.$rekapItem->spesifikasi.'
+				<td align="center"><font style="font-size: 11">
+					'.$sampelItem->analisis.'
+				</font></td>
+				<td align="center"><font style="font-size: 11">
+					'.$sampelItem->jumlah.'
 				</font></td>
 				<td align="right" style="padding-right: 15"><font style="font-size: 11">
-					'.\Yii::$app->formatter->format($rekapItem->harga,(['decimal',0])).'
+					'.\Yii::$app->formatter->format($sampelItem->harga,(['decimal',0])).'
+				</font></td>
+				<td align="right" style="padding-right: 15"><font style="font-size: 11">
+					'.\Yii::$app->formatter->format($sampelItem->jumlah*$sampelItem->harga,(['decimal',0])).'
 				</font></td>
 			</tr>';
 		}
 	?>
 	<tr>
-		<td colspan="2" style="border-top: 1px solid black">
+		<td height="30" colspan="5" style="border-top: 1px solid black; border-bottom: 1px solid black">
 		</td>
-		<th colspan="2" style="border-top: 1px solid black">
+		<th style="border-top: 1px solid black; border-bottom: 1px solid black">
 			<font style="font-size: 11">Total</font>
 		</th>
-		<th align="right" style="border-top: 1px solid black; padding-right: 15">
+		<th align="right" style="border-top: 1px solid black; border-bottom: 1px solid black; padding-right: 15">
 			<font style="font-size: 11"><?= \Yii::$app->formatter->format($invoice->total_biaya,(['decimal',0])) ?>	</font>
 		</th>
 	</tr>
 	<tr>
-		<td colspan="2" style="border-bottom: 1px solid black">
-		</td>
-		<th colspan="2" style="border-bottom: 1px solid black">
-			<font style="font-size: 11">Deposit</font>
-		</th>
-		<th align="right" style="border-bottom: 1px solid black; padding-right: 15">
-			<font style="font-size: 11"><?= \Yii::$app->formatter->format($model->deposit_lpsb,(['decimal',0])) ?>	</font>
-		</th>
-	</tr>
-	<tr>
-		<td colspan="2" height="30" style="border-bottom: 1px solid black">
-		</td>
-		<th colspan="2" style="border-bottom: 1px solid black">
-			<font style="font-size: 11">Sisa <?= (($invoice->total_biaya-$model->deposit_lpsb) < 0 ? 'Deposit' : 'Biaya Yang Harus Dibayarkan') ?></font>
-		</th>
-		<th align="right" style="border-bottom: 1px solid black; padding-right: 15">
-			<font style="font-size: 11"><?= \Yii::$app->formatter->format(abs($invoice->total_biaya-$model->deposit_lpsb),(['decimal',0])) ?>	</font>
-		</th>
-	</tr>
-	<tr>
 		<td height="25" colspan="7" align="left" style=" border-bottom: 1px solid black; padding-left: 15">
-			<font style="font-size: 11">Terbilang # <?= \Yii::$app->formatter->asSpellout(abs($invoice->total_biaya-$model->deposit_lpsb)) ?> rupiah #</font>
+			<font style="font-size: 11">Terbilang # <?= \Yii::$app->formatter->asSpellout($invoice->total_biaya) ?> rupiah #</font>
 		</td>
 	</tr>
 	<tr>
@@ -190,18 +178,18 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td colspan="5">
+		<td colspan="6">
 			<font style="font-size: 11">Bogor, <?= date('d-m-Y', strtotime($invoice->tanggal_penerbitan_invoice)) ?></font>
 		</td>
 	</tr>
 	<tr>
 		<td></td>
-		<td colspan="5">
+		<td colspan="6">
 			<font style="font-size: 11">Lab Pusat Studi Biofarmaka,</font>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2"></td>
+		<td colspan="3"></td>
 		<td>
 			<font style="font-size: 11">Bank:</font>
 		</td>
@@ -210,7 +198,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2"></td>
+		<td colspan="3"></td>
 		<td>
 			<font style="font-size: 11">No Rek:</font>
 		</td>
@@ -219,7 +207,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2"></td>
+		<td colspan="3"></td>
 		<td>
 			<font style="font-size: 11">Nama:</font>
 		</td>

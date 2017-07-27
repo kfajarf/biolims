@@ -55,7 +55,7 @@ use kartik\date\DatePicker;
         </div>
         <div class="col-sm-5">
             <?= $form->field($model, 'tanggal_diterima')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => '-- Tanggal Diterima --'],
+            'options' => ['placeholder' => '-- 2017/12/31 --'],
             'pluginOptions' => [
                     'startDate' => date('Y-m-d'),
                     'autoclose'=>true,
@@ -66,7 +66,7 @@ use kartik\date\DatePicker;
         </div>
         <div class="col-sm-5">
             <?= $form->field($model, 'tanggal_selesai')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => '-- Tanggal Selesai --'],
+            'options' => ['placeholder' => '-- 2017/12/31 --'],
             'pluginOptions' => [
                     'startDate' => date('Y-m-d'),
                     'autoclose'=>true,

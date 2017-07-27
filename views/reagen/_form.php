@@ -47,12 +47,15 @@ use kartik\date\DatePicker;
         <div class="col-md-2">
             <?= $form->field($reagen, 'jumlah_minimum')->textInput() ?>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <?= $form->field($reagen, 'unit')->textInput(['maxlength' => true]) ?>
         </div>
-        <div class="col-md-5">
+        <div class="col-sm-3">
+            <?= $form->field($reagen, "suhu_penyimpanan")->dropDownList([ 'Room Temperature' => 'Room Temperature', '-2 Celsius' => '-2 Celsius', '-20 Celsius' => '-20 Celsius'], ['prompt' => 'Suhu Penyimpanan']) ?>
+        </div>
+        <div class="col-md-3">
             <?= $form->field($reagen, 'tanggal_kadaluarsa')->widget(DatePicker::classname(), [
-                'options' => ['placeholder' => 'Masukkan Tanggal Kadaluarsa'],
+                'options' => ['placeholder' => '-- 2017/12/31 --'],
                 'pluginOptions' => [
                     'autoclose'=>true,
                     'format' => 'yyyy-mm-dd'

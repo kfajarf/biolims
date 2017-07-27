@@ -39,12 +39,12 @@ class Reagen extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_reagen', 'nama_reagen', 'jenis_reagen', 'jumlah', 'jumlah_minimum', 'unit', 'tanggal_kadaluarsa', 'id_lokasi', 'id_supplier'], 'required'],
+            [['id_reagen', 'nama_reagen', 'jenis_reagen', 'jumlah', 'jumlah_minimum', 'unit', 'id_lokasi', 'id_supplier', 'suhu_penyimpanan'], 'required'],
             [['jumlah', 'jumlah_minimum'], 'number'],
-            [['tanggal_kadaluarsa', 'status'], 'safe'],
+            [['tanggal_kadaluarsa', 'status', 'tanggal_kadaluarsa'], 'safe'],
             [['status'], 'default', 'value' => '-'],
             [['id_lokasi', 'id_supplier', 'id_storage'], 'integer'],
-            [['id_reagen', 'nama_reagen', 'status'], 'string', 'max' => 100],
+            [['id_reagen', 'nama_reagen', 'status', 'suhu_penyimpanan'], 'string', 'max' => 100],
             [['unit'], 'string', 'max' => 20],
             [['id_storage'], 'exist', 'skipOnError' => true, 'targetClass' => ChemStorage::className(), 'targetAttribute' => ['id_storage' => 'id']],
             [['id_lokasi'], 'exist', 'skipOnError' => true, 'targetClass' => Lokasi::className(), 'targetAttribute' => ['id_lokasi' => 'id']],
@@ -64,6 +64,7 @@ class Reagen extends \yii\db\ActiveRecord
             'jumlah' => 'Jumlah',
             'jumlah_minimum' => 'Jumlah Minimum',
             'unit' => 'Unit',
+            'suhu_penyimpanan' => 'Suhu Penyimpanan',
             'tanggal_kadaluarsa' => 'Tanggal Kadaluarsa',
             'status' => 'Status',
             'id_lokasi' => 'Lokasi',

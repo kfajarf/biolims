@@ -267,10 +267,10 @@ class PenelitiController extends Controller
         $model = $this->findModel($id);
         $modelsBahan = [new RekapitulasiBahan];
 
-        if ($model->load(Yii::$app->request->post())) 
-        {
+        // if ($model->load(Yii::$app->request->post())) 
+        // {
             $modelsBahan = Model::createMultiple(RekapitulasiBahan::classname());
-            Model::loadMultiple($modelsBahan, Yii::$app->request->post());
+        if (Model::loadMultiple($modelsBahan, Yii::$app->request->post())) {
             // validate all models
             $model->save();
             $valid = $model->validate();
@@ -316,18 +316,16 @@ class PenelitiController extends Controller
         $this->checkPrivilege();
         $model = $this->findModel($id);
         $modelsBahan = $model->rekapitulasiBahan;
-
-        if ($model->load(Yii::$app->request->post())) {
-
+        // var_dump($modelsBahan);die();
+        // if ($model->load(Yii::$app->request->post())) {
             $oldIDs = ArrayHelper::map($modelsBahan, 'id', 'id');
-            $modelsBahan = Model::createMultiple(RekapitulasiBahan::classname(), $modelsBahan);
-            Model::loadMultiple($modelsBahan, Yii::$app->request->post());
-            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsBahan, 'id', 'id')));
-            $model->save();
+            $modelsBahanData = Model::createMultiple(RekapitulasiBahan::classname(), $modelsBahan);
+        if (Model::loadMultiple($modelsBahanData, Yii::$app->request->post())) {
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsBahanData, 'id', 'id')));
             // validate all models
             $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsBahan) && $valid;
-
+            // var_dump($valid);die();
+            $valid = Model::validateMultiple($modelsBahanData) && $valid;
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
@@ -335,7 +333,7 @@ class PenelitiController extends Controller
                         if (!empty($deletedIDs)) {
                             RekapitulasiBahan::deleteAll(['id' => $deletedIDs]);
                         }
-                        foreach ($modelsBahan as $modelBahan) {
+                        foreach ($modelsBahanData as $modelBahan) {
                             $modelBahan->id_peneliti = $model->id;
                             if (! ($flag = $modelBahan->save(false))) {
                                 $transaction->rollBack();
@@ -351,12 +349,12 @@ class PenelitiController extends Controller
                     $transaction->rollBack();
                 }
             }
+        } else {
+            return $this->render('updateRekapitulasiBahan', [
+                'model' => $model,
+                'modelsBahan' => (empty($modelsBahan)) ? [new RekapitulasiBahan] : $modelsBahan,
+            ]);
         }
-
-        return $this->render('updateRekapitulasiBahan', [
-            'model' => $model,
-            'modelsBahan' => (empty($modelsBahan)) ? [new RekapitulasiBahan] : $modelsBahan,
-        ]);
     }
     
 
@@ -366,33 +364,40 @@ class PenelitiController extends Controller
         $this->checkPrivilege();
         $model = $this->findModel($id);
         $invoice = new Invoice;
-        $modelsSampelInvoice = [new SampelInvoice];
+        $modelsBahan = $model->rekapitulasiBahan;
 
-        if ($invoice->load(Yii::$app->request->post())) 
-        {
-            $modelsSampelInvoice = Model::createMultiple(SampelInvoice::classname());
-            Model::loadMultiple($modelsSampelInvoice, Yii::$app->request->post());
-            // validate all models
+        if ($invoice->load(Yii::$app->request->post())) {
+
+            $oldIDs = ArrayHelper::map($modelsBahan, 'id', 'id');
+            $modelsBahan = Model::createMultiple(RekapitulasiBahan::classname(), $modelsBahan);
+            Model::loadMultiple($modelsBahan, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsBahan, 'id', 'id')));
             $invoice->id_peneliti = $model->id;
             $invoice->no_invoice .= '/I3.11.8/LPSB-INV/2017';
+            $invoice->total_biaya = 0;
             $invoice->save();
+            // validate all models
             $valid = $invoice->validate();
-            $valid = Model::validateMultiple($modelsSampelInvoice) && $valid;
-
             // var_dump($valid);die();
+            $valid = Model::validateMultiple($modelsBahan) && $valid;
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $invoice->save(false)) {
-                        foreach ($modelsSampelInvoice as $modelSampelInvoice) {
-                            $modelSampelInvoice->id_peneliti = $model->id;
-                            if (! ($flag = $modelSampelInvoice->save(false))) {
+                        if (!empty($deletedIDs)) {
+                            RekapitulasiBahan::deleteAll(['id' => $deletedIDs]);
+                        }
+                        foreach ($modelsBahan as $modelBahan) {
+                            $modelBahan->id_peneliti = $model->id;
+                            $invoice->total_biaya += $modelBahan->harga;
+                            if (! ($flag = $modelBahan->save(false))) {
                                 $transaction->rollBack();
                                 break;
                             }
                         }
                     }
                     if ($flag) {
+                        $invoice->save();
                         $transaction->commit();
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
@@ -400,11 +405,13 @@ class PenelitiController extends Controller
                     $transaction->rollBack();
                 }
             }
-        } else {
+        }
+        ///////////////////////////////////
+         else {
             return $this->render('createInvoice', [
                 'model' => $model,
                 'invoice' => $invoice,
-                'modelsSampelInvoice' => (empty($modelsSampelInvoice)) ? [new SampelInvoice] : $modelsSampelInvoice,
+                'modelsBahan' => (empty($modelsBahan)) ? [new RekapitulasiBahan] : $modelsBahan,
             ]);
         }
     }
@@ -420,35 +427,38 @@ class PenelitiController extends Controller
         $this->checkPrivilege();
         $model = $this->findModel($id);
         $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
-        $modelsSampelInvoice = $model->sampelInvoice;
+        $modelsBahan = $model->rekapitulasiBahan;
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($invoice->load(Yii::$app->request->post())) {
 
-            $oldIDs = ArrayHelper::map($modelsSampelInvoice, 'id', 'id');
-            $modelsSampelInvoice = Model::createMultiple(SampelInvoice::classname(), $modelsSampelInvoice);
-            Model::loadMultiple($modelsSampelInvoice, Yii::$app->request->post());
-            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSampelInvoice, 'id', 'id')));
+            $oldIDs = ArrayHelper::map($modelsBahan, 'id', 'id');
+            $modelsBahan = Model::createMultiple(RekapitulasiBahan::classname(), $modelsBahan);
+            Model::loadMultiple($modelsBahan, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsBahan, 'id', 'id')));
+            $invoice->total_biaya=0;
             $invoice->save();
             // validate all models
             $valid = $invoice->validate();
-            $valid = Model::validateMultiple($modelsSampelInvoice) && $valid;
+            $valid = Model::validateMultiple($modelsBahan) && $valid;
 
             if ($valid) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $invoice->save(false)) {
                         if (!empty($deletedIDs)) {
-                            SampelInvoice::deleteAll(['id' => $deletedIDs]);
+                            RekapitulasiBahan::deleteAll(['id' => $deletedIDs]);
                         }
-                        foreach ($modelsSampelInvoice as $modelSampelInvoice) {
-                            $modelSampelInvoice->id_peneliti = $model->id;
-                            if (! ($flag = $modelSampelInvoice->save(false))) {
+                        foreach ($modelsBahan as $modelBahan) {
+                            $modelBahan->id_peneliti = $model->id;
+                            $invoice->total_biaya += $modelBahan->harga;
+                            if (! ($flag = $modelBahan->save(false))) {
                                 $transaction->rollBack();
                                 break;
                             }
                         }
                     }
                     if ($flag) {
+                        $invoice->save();
                         $transaction->commit();
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
@@ -461,7 +471,7 @@ class PenelitiController extends Controller
         return $this->render('updateInvoice', [
             'model' => $model,
             'invoice' => $invoice,
-            'modelsSampelInvoice' => (empty($modelsSampelInvoice)) ? [new SampelInvoice] : $modelsSampelInvoice,
+            'modelsBahan' => (empty($modelsBahan)) ? [new RekapitulasiBahan] : $modelsBahan,
         ]);
     }
 
@@ -469,11 +479,11 @@ class PenelitiController extends Controller
     // get your HTML raw content without any layouts or scripts
         $model = $this->findModel($id);
         $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
-        $sampelInvoice = SampelInvoice::findAll(['id_peneliti' => $model->id]);
+        $rekapitulasiBahan = RekapitulasiBahan::findAll(['id_peneliti' => $model->id]);
         $content = $this->renderPartial('invoicePdf', [
             'model' => $model,
             'invoice' => $invoice,
-            'sampelInvoice' => $sampelInvoice,
+            'rekapitulasiBahan' => $rekapitulasiBahan,
         ]);
      
         // setup kartik\mpdf\Pdf component
@@ -517,9 +527,6 @@ class PenelitiController extends Controller
 
         if ($kwitansi->load(Yii::$app->request->post())) {
             $kwitansi->no_kwitansi .= '/I3.11.8/KW/2017';
-            $kwitansi->telah_terima_dari = $model->nama_lengkap;
-            $kwitansi->jumlah_biaya = $invoice->total_biaya;
-            $kwitansi->terbilang = $invoice->terbilang;
             $kwitansi->id_peneliti = $model->id;
             $kwitansi->save();
             // var_dump($kwitansi->validate());die;
@@ -557,9 +564,11 @@ class PenelitiController extends Controller
     // get your HTML raw content without any layouts or scripts
         $model = $this->findModel($id);
         $kwitansi = Kwitansi::findOne(['id_peneliti' => $model->id]);
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
         $content = $this->renderPartial('kwitansiPdf', [
             'model' => $model,
             'kwitansi' => $kwitansi,
+            'invoice' => $invoice,
         ]);
      
         // setup kartik\mpdf\Pdf component

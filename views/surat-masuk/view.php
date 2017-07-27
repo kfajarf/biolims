@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\SuratMasuk */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Surat Masuks', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = ['label' => 'Surat Masuk', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->nomor_surat;
 ?>
 <div class="surat-masuk-view">
 

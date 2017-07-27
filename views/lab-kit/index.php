@@ -21,8 +21,8 @@ $model = \app\models\PenggunaanAlat::find()->where(['not', ['kit_id' => NULL]])-
 // var_dump(Yii::$app->controller->action->id);
 // die();
 
-$this->title = 'Lab Kits';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = NULL;
+$this->params['breadcrumbs'][] = 'Alat Laboratorium';
 ?>
 <div class="lab-kit-index">
 
@@ -81,7 +81,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         \app\controllers\LabKitController::indexKalibrasi($model->id);
                     } else if ($today > $model->kalibrasi_selanjutnya) {
                         $model->kalibrasi_per_hari = 0;
-                        $model->save();                        
+                        $model->save();     
+                        return date('d-m-Y', strtotime($model->kalibrasi_selanjutnya));                   
                     } else if ($model->status_kalibrasi == 'belum dikalibrasi') {
                         return "Peringatan Kalibrasi Alat";
                     } else return date('d-m-Y', strtotime($model->kalibrasi_selanjutnya));

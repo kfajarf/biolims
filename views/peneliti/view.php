@@ -10,9 +10,9 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model app\models\Peneliti */
 
-$this->title = $model->id;
+$this->title = '';
 $this->params['breadcrumbs'][] = ['label' => 'Peneliti', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $model->id;
 $rekapBahan = \app\models\RekapitulasiBahan::findAll(['id_peneliti' => $model->id]);
 $invoiceItem = \app\models\Invoice::find()->where(['id_peneliti' => $model->id])->one();
 $kwitansiItem = \app\models\Kwitansi::find()->where(['id_peneliti' => $model->id])->one();
@@ -41,27 +41,31 @@ if($kwitansiItem == NULL) {
         ]) ?>
         <?= Html::a('Rekapitulasi Bahan', [$url, 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?php
-            if($invoiceItem == NULL) 
-            {
-                echo Html::a('Buat Invoice', [$urlInvoice, 'id' => $model->id], ['class' => 'btn btn-primary']);
-            } else {
-                echo Html::a('Update Invoice', [$urlInvoice, 'id' => $model->id], ['class' => 'btn btn-primary']);
-                echo Html::a('<i class="fa fa-download"></i> Unduh Invoice', ['invoice-pdf', 'id' => $model->id], [
-                    'class'=>'btn btn-default', 
-                    'target'=>'_blank',
-                ]); 
+            if($rekapBahan != NULL){
+                if($invoiceItem == NULL) 
+                {
+                    echo Html::a('Buat Invoice', [$urlInvoice, 'id' => $model->id], ['class' => 'btn btn-primary']);
+                } else {
+                    echo Html::a('Update Invoice', [$urlInvoice, 'id' => $model->id], ['class' => 'btn btn-primary']);
+                    echo Html::a('<i class="fa fa-download"></i> Unduh Invoice', ['invoice-pdf', 'id' => $model->id], [
+                        'class'=>'btn btn-default', 
+                        'target'=>'_blank',
+                    ]); 
+                }
             }
         ?>
         <?php
-            if($kwitansiItem == NULL) 
-            {
-                echo Html::button('Buat Kwitansi', ['value' => Url::to('/peneliti/create-kwitansi?id='.($model->id)), 'class' => 'btn btn-primary', 'id' => 'modalButton']);
-            } else {
-                echo Html::a('Update Kwitansi', [$urlKwitansi, 'id' => $model->id], ['class' => 'btn btn-primary']);
-                echo Html::a('<i class="fa fa-download"></i> Unduh Kwitansi', ['kwitansi-pdf', 'id' => $model->id], [
-                    'class'=>'btn btn-default', 
-                    'target'=>'_blank',
-                ]); 
+            if($invoiceItem != NULL){
+                if($kwitansiItem == NULL) 
+                {
+                    echo Html::button('Buat Kwitansi', ['value' => Url::to('/peneliti/create-kwitansi?id='.($model->id)), 'class' => 'btn btn-primary', 'id' => 'modalButton']);
+                } else {
+                    echo Html::a('Update Kwitansi', [$urlKwitansi, 'id' => $model->id], ['class' => 'btn btn-primary']);
+                    echo Html::a('<i class="fa fa-download"></i> Unduh Kwitansi', ['kwitansi-pdf', 'id' => $model->id], [
+                        'class'=>'btn btn-default', 
+                        'target'=>'_blank',
+                    ]); 
+                }
             }
         ?>
         <?php 
@@ -75,6 +79,7 @@ if($kwitansiItem == NULL) {
             Modal::end();
          ?>
     </p>
+    
 <div class= "row" style="padding: 15px">
     <div class= "line col-md-10">
     <?= DetailView::widget([
@@ -84,18 +89,32 @@ if($kwitansiItem == NULL) {
             'nama_lengkap',
             'tempat_tanggal_lahir',
             'institusi',
-            'departemen_id',
+            [
+                'label' => 'Nama Departemen',
+                'value' => $model->departemen->nama_departemen,
+            ],
             'nrp_nim',
             'no_handphone',
             'email:email',
             'alamat_dan_no_telp_bogor',
             'alamat_dan_no_telp_orang_tua',
+            [
+                'label' => 'Nama Pembimbing',
+                'value' => $model->namaPembimbing,
+            ],
+            [
+                'label' => 'Tempat Penelitian',
+                'value' => $model->namaTempat,
+            ],
             'judul_penelitian',
-            'tanggal_masuk_lpsb',
+            [
+                'label' => 'Tanggal Masuk LPSB',
+                'value' => date('d-m-Y', strtotime($model->tanggal_masuk_lpsb)),
+            ],
             'uang_masuk_lpsb',
             'deposit_lpsb',
             'keterangan',
-            'biaya_hasil_rekapitulasi',
+            // 'biaya_hasil_rekapitulasi',
         ],
     ]) ?>
 </div>
@@ -111,11 +130,12 @@ if($kwitansiItem == NULL) {
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
 
-                         'harga', 
-                         'jumlah',
-                         'nama_bahan',
-                         'spesifikasi',
-                         'keterangan',
+                        'nama_bahan',
+                        'jumlah',
+                        'spesifikasi',
+
+                        'harga', 
+                        'keterangan',
                     ],
                 ]); ?> 
             <?php Pjax::end(); ?></div>

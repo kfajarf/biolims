@@ -87,15 +87,18 @@ use kartik\date\DatePicker;
                         </div>
                         <!-- .row -->
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <?= $form->field($modelReagen, "[{$i}]jenis_reagen")->dropDownList([ 'padat' => 'Padat', 'cair' => 'Cair', ], ['prompt' => 'Pilih Jenis Reagen']) ?>
                             </div>
-                        	<div class="col-sm-4">
+                        	<div class="col-sm-3">
                         		<?= $form->field($modelReagen, "[{$i}]id_lokasi")->dropDownList(
                 					ArrayHelper::map(Lokasi::find()->all(), 'id', 'lokasi_penyimpanan'), ['prompt' => 'Pilih Lokasi Penyimpanan']
             					) ?>
                         	</div>
-                        	<div class="col-sm-4">
+                            <div class="col-sm-3">
+                                <?= $form->field($modelReagen, "[{$i}]suhu_penyimpanan")->dropDownList([ 'Room Temperature' => 'Room Temperature', '-2 Celsius' => '-2 Celsius', '-20 Celsius' => '-20 Celsius'], ['prompt' => 'Suhu Penyimpanan']) ?>
+                            </div>
+                        	<div class="col-sm-3">
                         		<?= $form->field($modelReagen, "[{$i}]id_supplier")->dropDownList(
                 					ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier'), ['prompt' => 'Pilih Supplier']
             					) ?>
@@ -113,7 +116,7 @@ use kartik\date\DatePicker;
                             </div>
                             <div class="col-sm-5">
                                 <?= $form->field($modelReagen, "[{$i}]tanggal_kadaluarsa")->widget(DatePicker::classname(), [
-                                    'options' => ['placeholder' => 'Masukkan Tanggal Kadaluarsa'],
+                                    'options' => ['placeholder' => '-- 2017/12/31 --'],
     								'pluginOptions' => [
                                         'startDate' => date('Y-m-d'),
                                         'autoclose'=>true,

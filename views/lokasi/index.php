@@ -9,8 +9,8 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\LokasiSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Lokasi';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = 'Lokasi';
 ?>
 <div class="lokasi-index">
 

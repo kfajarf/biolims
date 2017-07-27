@@ -30,7 +30,7 @@ use app\models\LabKit;
         </div>
         <div class="col-md-6">
             <?= $form->field($pengguna, 'tanggal_penggunaan')->widget(DatePicker::classname(), [
-                'options' => ['placeholder' => 'Masukkan tanggal'],
+                'options' => ['placeholder' => '-- 2017/12/31 --'],
                 'pluginOptions' => [
                     'startDate' => date('Y-m-d'),
                     'autoclose'=>true,

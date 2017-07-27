@@ -8,9 +8,9 @@ use yii\bootstrap\Modal;
 /* @var $this yii\web\View */
 /* @var $model app\models\LabKit */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Lab Kits', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = ['label' => 'Alat Laboratorium', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->id;
 ?>
 <div class="lab-kit-view">
 

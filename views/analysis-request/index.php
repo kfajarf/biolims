@@ -13,8 +13,8 @@ HighchartsAsset::register($this);
 /* @var $searchModel app\models\AnalysisRequestSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = "Analysis Requests";
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = "";
+$this->params['breadcrumbs'][] = 'Analysis Requests';
 
 //var_dump(Yii::$app->controller->action->id);die();
 $percepatan=[];
@@ -34,7 +34,7 @@ for ($idx=1; $idx <= 12; $idx++)
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>-->
 
     <p>
-        <?= Html::a('Surat Permohonan Analisis', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Buat Surat Permohonan Analisis', ['create'], ['class' => 'btn btn-primary']) ?>
     </p>
         
     <div class= "row" style="padding: 15px">
@@ -113,7 +113,14 @@ for ($idx=1; $idx <= 12; $idx++)
                     return date('d-m-Y', strtotime($model->tanggal_selesai));
                 }
             ],
-            'total_biaya',
+            [
+                'attribute' => 'total_biaya',
+                'value' => function($model)
+                {
+                    return \Yii::$app->formatter->format($model->total_biaya, ['decimal', 0]);
+                }
+            ],
+            
             //'dp',
             //'sisa',
             //'keterangan:ntext',

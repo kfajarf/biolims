@@ -20,7 +20,7 @@ class TakeReagenSearch extends TakeReagen
     {
         return [
            	[['id', 'chem_storage_id', 'jumlah'], 'integer'],
-            [['id_reagen', 'nama_reagen', 'tanggal_pengambilan', 'chem_storage_id', 'unit'], 'safe'],
+            [['id_reagen', 'nama_reagen', 'tanggal_pengambilan', 'chem_storage_id', 'nama_pengambil', 'unit'], 'safe'],
         ];
     }
 
@@ -65,6 +65,7 @@ class TakeReagenSearch extends TakeReagen
         ]);
 
         $query->andFilterWhere(['like', 'id_reagen', $id])
+            ->andFilterWhere(['like', 'nama_pengambil', $this->nama_pengambil])
             ->andFilterWhere(['like', 'nama_reagen', $this->nama_reagen])
             ->andFilterWhere(['like', 'unit', $this->unit])
             ->andFilterWhere(['like', 'tanggal_pengambilan', $this->tanggal_pengambilan]);

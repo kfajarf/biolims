@@ -19,8 +19,8 @@ use kartik\export\ExportMenu;
 // var_dump('<br><h1>'.'PENGGUNAAN ALAT'.'</h1><br>');
 // die();
 
-$this->title = 'Penggunaan Alat';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = 'Penggunaan Alat';
 ?>
 <div class="penggunaan-alat-index">
 

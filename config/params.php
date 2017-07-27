@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'adminEmail' => 'lpsbipb@gmail.com',
+    'adminEmail' => 'kfajarf@gmail.com',
     'itemMinimal' => 1,
     'itemLimit' => 14,
     'kajiUlangParamLimit' => 18,

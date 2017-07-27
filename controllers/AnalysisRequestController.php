@@ -520,6 +520,248 @@ class AnalysisRequestController extends Controller
         return $this->redirect(['index']);
     }
 
+    
+    public function actionCreateInvoice($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $invoice = new Invoice;
+        $modelsSampelInvoice = [new SampelInvoice];
+
+        if ($invoice->load(Yii::$app->request->post())) 
+        {
+            $modelsSampelInvoice = Model::createMultiple(SampelInvoice::classname());
+            Model::loadMultiple($modelsSampelInvoice, Yii::$app->request->post());
+            // validate all models
+            $invoice->id_peneliti = $model->id;
+            $invoice->no_invoice .= '/I3.11.8/LPSB-INV/2017';
+            $invoice->total_biaya = 0;
+            $invoice->save();
+            $valid = $invoice->validate();
+            $valid = Model::validateMultiple($modelsSampelInvoice) && $valid;
+
+            // var_dump($valid);die();
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $invoice->save(false)) {
+                        foreach ($modelsSampelInvoice as $modelSampelInvoice) {
+                            $modelSampelInvoice->id_peneliti = $model->id;
+                            $biaya = $modelSampelInvoice->jumlah * $modelSampelInvoice->harga;
+                            $invoice->total_biaya += $biaya;
+                            if (! ($flag = $modelSampelInvoice->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $invoice->save();
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+        } else {
+            return $this->render('createInvoice', [
+                'model' => $model,
+                'invoice' => $invoice,
+                'modelsSampelInvoice' => (empty($modelsSampelInvoice)) ? [new SampelInvoice] : $modelsSampelInvoice,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Peneliti model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdateInvoice($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
+        $modelsSampelInvoice = $model->sampelInvoice;
+
+        if ($invoice->load(Yii::$app->request->post())) {
+
+            $oldIDs = ArrayHelper::map($modelsSampelInvoice, 'id', 'id');
+            $modelsSampelInvoice = Model::createMultiple(SampelInvoice::classname(), $modelsSampelInvoice);
+            Model::loadMultiple($modelsSampelInvoice, Yii::$app->request->post());
+            $deletedIDs = array_diff($oldIDs, array_filter(ArrayHelper::map($modelsSampelInvoice, 'id', 'id')));
+            $invoice->save();
+            // validate all models
+            $valid = $invoice->validate();
+            // var_dump($valid);die();
+            $valid = Model::validateMultiple($modelsSampelInvoice) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $invoice->save(false)) {
+                        if (!empty($deletedIDs)) {
+                            SampelInvoice::deleteAll(['id' => $deletedIDs]);
+                        }
+                        foreach ($modelsSampelInvoice as $modelSampelInvoice) {
+                            $modelSampelInvoice->id_peneliti = $model->id;
+                            $biaya = $modelSampelInvoice->jumlah * $modelSampelInvoice->harga;
+                            $invoice->total_biaya += $biaya;
+                            if (! ($flag = $modelSampelInvoice->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $invoice->save();
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+        }
+
+        return $this->render('updateInvoice', [
+            'model' => $model,
+            'invoice' => $invoice,
+            'modelsSampelInvoice' => (empty($modelsSampelInvoice)) ? [new SampelInvoice] : $modelsSampelInvoice,
+        ]);
+    }
+
+    public function actionInvoicePdf($id) {
+    // get your HTML raw content without any layouts or scripts
+        $model = $this->findModel($id);
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
+        $sampelInvoice = SampelInvoice::findAll(['id_peneliti' => $model->id]);
+        $content = $this->renderPartial('invoicePdf', [
+            'model' => $model,
+            'invoice' => $invoice,
+            'sampelInvoice' => $sampelInvoice,
+        ]);
+     
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:12px}', 
+             // set mPDF properties on the fly
+            'options' => ['shrink_tables_to_fit' => 0],
+
+            'filename' => $invoice->no_invoice,
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>null, 
+                'SetFooter'=>null,
+            ]   
+        ]);
+ 
+    // return the pdf output as per the destination setting
+        return $pdf->render();
+    } 
+
+    public function actionCreateKwitansi($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $kwitansi = new Kwitansi();
+        $invoice = Invoice::findOne(['id_peneliti' => $model->id]);
+
+        if ($kwitansi->load(Yii::$app->request->post())) {
+            $kwitansi->no_kwitansi .= '/I3.11.8/KW/2017';
+            $kwitansi->telah_terima_dari = $model->nama_lengkap;
+            $kwitansi->jumlah_biaya = $invoice->total_biaya;
+            $kwitansi->terbilang = $invoice->terbilang;
+            $kwitansi->id_peneliti = $model->id;
+            $kwitansi->save();
+            // var_dump($kwitansi->validate());die;
+            return $this->redirect(['view', 'id'=> $model->id]);
+        } else {
+            return $this->renderAjax('createKwitansi', [
+                'model' => $model,
+                'kwitansi' => $kwitansi,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Supplier model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdateKwitansi($id)
+    {
+        $this->checkPrivilege();
+        $model = $this->findModel($id);
+        $kwitansi = Kwitansi::findOne(['id_peneliti' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('updateKwitansi', [
+                'model' => $model,
+                'kwitansi' => $kwitansi,
+            ]);
+        }
+    }
+
+    public function actionKwitansiPdf($id) {
+    // get your HTML raw content without any layouts or scripts
+        $model = $this->findModel($id);
+        $kwitansi = Kwitansi::findOne(['id_peneliti' => $model->id]);
+        $content = $this->renderPartial('kwitansiPdf', [
+            'model' => $model,
+            'kwitansi' => $kwitansi,
+        ]);
+     
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:12px}', 
+             // set mPDF properties on the fly
+            'options' => ['shrink_tables_to_fit' => 0],
+
+            'filename' => $kwitansi->no_kwitansi,
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>null, 
+                'SetFooter'=>null,
+            ]   
+        ]);
+ 
+    // return the pdf output as per the destination setting
+        return $pdf->render();
+    } 
+
     /**
      * Finds the AnalysisRequest model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

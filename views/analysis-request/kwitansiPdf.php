@@ -34,7 +34,7 @@
 			</td>
 			<td vAlign="top" width=3%>:</td>
 			<td style="border: 1;" vAlign="top" align=center height=50 width=60%>
-				#&nbsp;<?= \Yii::$app->formatter->asSpellout(($invoice->total_biaya-$model->deposit_lpsb) < 0 ? $invoice->total_biaya : abs($invoice->total_biaya-$model->deposit_lpsb)) ?>&nbsp; rupiah # 
+				#&nbsp;<?= $kwitansi->terbilang ?>&nbsp; rupiah # 
 			</td>
 		</tr>
 		<tr>
@@ -43,7 +43,15 @@
 			</td>
 			<td vAlign="top" width=3%>:</td>
 			<td vAlign="top" height=50 width=60%>
-				Penggantian bahan dan alat yang digunakan
+				Analisis&nbsp;
+				<?php
+					$sampelInvoice = \app\models\SampelInvoice::find()->where(['id_peneliti'=>$model->id])->asArray()->all();
+					$invoiceUnique = \app\controllers\AnalysisRequestController::unique_multidim_array($sampelInvoice, 'analisis');
+					foreach ($invoiceUnique as $idx => $invoiceItem) {
+					  	if($idx!==0) echo ', ';
+					  	echo $invoiceItem['analisis'];
+					}  echo '.';
+				?>
 			</td>
 		</tr>		
 	</table>
@@ -64,7 +72,7 @@
 		</tr>
 		<tr>
 			<td style="border: 1;" align=center>
-				<b>Rp <?= \Yii::$app->formatter->format((($invoice->total_biaya-$model->deposit_lpsb) < 0 ? $invoice->total_biaya : abs($invoice->total_biaya-$model->deposit_lpsb)), ['decimal',0]); ?>, -</b>
+				<b>Rp <?= \Yii::$app->formatter->format($kwitansi->jumlah_biaya, ['decimal',0]); ?>, -</b>
 			</td>			
 			<td>
 				

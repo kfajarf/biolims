@@ -31,7 +31,7 @@ class Departemen extends \yii\db\ActiveRecord
         return [
             [['nama_departemen'], 'required'],
             [['id_fakultas'], 'integer'],
-            [['nama_departemen'], 'string', 'max' => 100],
+            [['nama_departemen', 'kode_nim'], 'string', 'max' => 100],
             [['id_fakultas'], 'exist', 'skipOnError' => true, 'targetClass' => Fakultas::className(), 'targetAttribute' => ['id_fakultas' => 'id']],
         ];
     }
@@ -44,6 +44,7 @@ class Departemen extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nama_departemen' => 'Nama Departemen',
+            'kode_nim' => 'Kode NIM',
             'id_fakultas' => 'Id Fakultas',
         ];
     }

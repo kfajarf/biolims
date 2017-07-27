@@ -21,9 +21,9 @@ use yii\bootstrap\Modal;
 /*$test = new \yii\db\Expression('NOW()');
 var_dump($test);die();*/
 
-$this->title = 'Reagen';
-$this->params['breadcrumbs'][] = $this->title;
-$id =1;
+$this->title = '';
+$this->params['breadcrumbs'][] = 'Reagen';
+$id = 1;
 ?>
 <div class="reagen-index">
 
@@ -164,6 +164,11 @@ $id =1;
                 'attribute' => 'id_lokasi',
                 'value' => 'lokasi.lokasi_penyimpanan',
                 'filter' => Html::activeDropDownList($searchModel, 'id_lokasi', ArrayHelper::map(Lokasi::find()->asArray()->all(), 'id', 'lokasi_penyimpanan'), ['class' => 'form-control', 'prompt' => '-- Lokasi --']),
+            ],
+            [
+                'attribute' => 'suhu_penyimpanan',
+                'value' => 'suhu_penyimpanan',
+                'filter'=> array('Room Temperature' => 'Room Temperature', '-2 Celsius' => '-2 Celsius', '-20 Celsius' => '-20 Celsius'),
             ],
             [
                 'attribute' => 'id_supplier',

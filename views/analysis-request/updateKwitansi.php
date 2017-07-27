@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Peneliti */
 
-$this->title = 'Update Invoice: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Invoice', 'url' => ['index']];
+$this->title = 'Update Kwitansi: ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Kwitansi', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 $label = 'Update';
@@ -15,10 +15,9 @@ $label = 'Update';
 
     <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
-    <?= $this->render('_formInvoice', [
+    <?= $this->render('_formKwitansi', [
         'model' => $model,
-        'invoice' => $invoice,
-        'modelsBahan' => $modelsBahan,
+        'kwitansi' => $kwitansi,
     ]) ?>
 
 </div>

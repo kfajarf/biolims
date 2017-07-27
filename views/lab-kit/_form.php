@@ -17,7 +17,7 @@ use kartik\date\DatePicker;
     <div class="row">
         <div class="col-md-6">
             <?= $form->field($model, 'tanggal_mulai')->widget(DatePicker::classname(), [
-                'options' => ['placeholder' => 'Masukkan Tanggal Awal Kalibrasi'],
+                'options' => ['placeholder' => '-- 2017/12/31 --'],
                 'pluginOptions' => [
                     'startDate' => date('Y-m-d'),
                     'autoclose'=>true,

@@ -9,8 +9,8 @@ use yii\helpers\Url;
 /* @var $searchModel app\models\SupplierSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Suppliers';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = 'Penyuplai';
 ?>
 <div class="supplier-index">
 

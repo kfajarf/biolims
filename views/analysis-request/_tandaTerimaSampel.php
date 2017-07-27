@@ -259,9 +259,9 @@
 				<?php 
 
 					$idx = 0;
-					$sampelUnique = \app\controllers\AnalysisRequestController::unique_multidim_array($sampel, 'metode');
+					$sampelUnique = \app\controllers\AnalysisRequestController::unique_multidim_array($sampel, 'analisis');
 					foreach ($sampelUnique as $sampelItem) {
-						echo $sampelItem['metode'];
+						echo $sampelItem['analisis'];
 						echo ($idx == (count($sampel) - 1) ? "." : ", ");
 						$idx++;
 					}	

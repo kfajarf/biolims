@@ -14,10 +14,10 @@ use kartik\export\ExportMenu;
 /* @var $this yii\web\View */
 /* @var $model app\models\Reagen */
 
-$this->title = $reagen->id;
+$this->title = '';
 $id = $reagen -> id;
 $this->params['breadcrumbs'][] = ['label' => 'Reagens', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $reagen->id_reagen;
 
 // var_dump(date('Y'));die();
 ?>
@@ -85,6 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'lokasi_penyimpanan',
                 'value' => $lokasi -> lokasi_penyimpanan,
             ],
+            'suhu_penyimpanan',
             [
                 'attribute' => 'supplier',
                 'value' => $supplier -> supplier,
@@ -140,6 +141,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'filterModel' => $searchModel,
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
+                [
+                    'attribute' => 'nama_pengambil',
+                    'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Pencarian'
+                    ]
+                ],
                 [
                     'attribute' => 'id_reagen',
                     'filterInputOptions' => [

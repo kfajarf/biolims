@@ -35,7 +35,7 @@ use kartik\date\DatePicker;
             
             <div class="col-sm-4">
                 <?= $form->field($model, 'tanggal_diterima')->widget(DatePicker::classname(), [
-                    'options' => ['placeholder' => '-- Tanggal Selesai --'],
+                    'options' => ['placeholder' => '-- 2017/12/31 --'],
                     'pluginOptions' => [
                         'autoclose'=>true,
                         'format' => 'yyyy-mm-dd',
@@ -114,7 +114,7 @@ use kartik\date\DatePicker;
                     <?= $form->field($modelKAnalisis, "[{$indexAnalisis}]analisis")->textInput(['maxlength' => true])->widget(\yii\jui\AutoComplete::classname(), [
                             'options' => ['placeholder' => '', 'class' => 'form-control'],
                             'clientOptions' =>  [
-                                'source' => ArrayHelper::getColumn(FrekuensiPilihanJenisAnalisis::find()->all(), 'analisis'),  ],
+                                'source' => ArrayHelper::getColumn(JenisAnalisis::find()->all(), 'jenis'),  ],
                             ]
                         )
                     ?>
@@ -142,7 +142,7 @@ use kartik\date\DatePicker;
         </div>
         <div class="col-sm-4">
             <?= $form->field($model, 'tanggal_selesai')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => '-- Tanggal Selesai --'],
+            'options' => ['placeholder' => '-- 2017/12/31 --'],
             'pluginOptions' => [
                 'autoclose'=>true,
                 'format' => 'yyyy-mm-dd',
